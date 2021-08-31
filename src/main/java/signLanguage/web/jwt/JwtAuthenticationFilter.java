@@ -69,5 +69,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         //토큰을 jwt를 헤더에 달아줌.
         response.addHeader("Authorization", "Bearer "+jwtToken);
+        log.info("로그인 성공");
     }
 }

@@ -8,6 +8,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Configuration
 @ComponentScan({"signLanguage"})
 public class CorsConfig {
@@ -17,8 +20,8 @@ public class CorsConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true); // 자바스크립트 처리 여부
-        config.addAllowedOrigin("*");     // 모든 IP에 대해 응답 허용
-        config.addAllowedMethod("*");
+        config.setAllowedOrigins(List.of("http://localhost:3000"));     // 모든 IP에 대해 응답 허용
+        config.setAllowedMethods(Arrays.asList("GET","POST","PUT","PATCH","OPTIONS","DELETE"));
         config.addAllowedHeader("*");
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);

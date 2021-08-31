@@ -41,6 +41,9 @@ public class Member {
 
     private LocalDate birth;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL)
+    private List<ReceptionOrder> orderList = new ArrayList<>();
+
     @Builder.Default
     @Enumerated(EnumType.STRING)
     private Active active = Active.ACTIVE ;
@@ -76,6 +79,13 @@ public class Member {
             return Arrays.asList(this.roles.split(","));
         }
         return new ArrayList<>();
+    }
+
+    public void addOrders(ReceptionOrder receptionOrder){
+        if(!this.getOrderList().contains(receptionOrder)){
+            this.getOrderList().add(receptionOrder);
+            receptionOrder.setMember(this);
+        }
     }
 
 }

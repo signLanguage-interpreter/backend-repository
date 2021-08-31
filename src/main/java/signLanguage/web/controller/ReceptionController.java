@@ -10,5 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ReceptionController {
 
+    @PostMapping("/reception")
+    public void orderReception(){
+
+    }
 
 }
