@@ -42,6 +42,17 @@ public class ReceptionOrder {
     @JoinColumn(name = "member_id")
     private Member member;
 
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "interpreter_id")
+//    private Interpreter interpreter;
+//
+//
+//    public void addInterpreter(Interpreter interpreter){
+//        if(!interpreter.getOrderList().contains(this)){
+//            interpreter.getOrderList().add(this);
+//            this.interpreter = interpreter;
+//        }
+//    }
 
     public void addMember(Member member){
         if(!member.getOrderList().contains(this)){
@@ -64,6 +75,7 @@ public class ReceptionOrder {
         order.setCommonLocalTime(new CommonLocalTime());
         order.setReceptionDate(localDateTime);
         order.addMember(member);
+//        order.addInterpreter(interpreter);
         order.setStatus(OrderStatus.HOLD);
         return order;
     }

@@ -25,7 +25,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     private MemberRepository memberRepository;
 
     public JwtAuthorizationFilter(AuthenticationManager authenticationManager,
-                                   MemberRepository memberRepository){
+                                  MemberRepository memberRepository){
         super(authenticationManager);
         this.memberRepository = memberRepository;
     }

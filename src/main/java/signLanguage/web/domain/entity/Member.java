@@ -37,12 +37,26 @@ public class Member {
 
     /* systemAdmin */
     @Builder.Default
+    @Column(name = "roles", updatable = false)
     private String roles = "ROLE_USER";
 
     private LocalDate birth;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL)
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.PERSIST)
     private List<ReceptionOrder> orderList = new ArrayList<>();
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "interpreter_id",updatable = false)
+    private Interpreter interpreter;
+
+    public void addInterpreter(Interpreter interpreter){
+        if(this.interpreter == null){
+            this.interpreter = interpreter;
+            interpreter.setMember(this);
+        }
+    }
+
 
     @Builder.Default
     @Enumerated(EnumType.STRING)

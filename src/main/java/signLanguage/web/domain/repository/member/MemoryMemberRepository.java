@@ -3,6 +3,7 @@ package signLanguage.web.domain.repository.member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import signLanguage.web.domain.entity.Interpreter;
 import signLanguage.web.domain.entity.Member;
 
 import javax.persistence.EntityManager;
@@ -30,6 +31,10 @@ public class MemoryMemberRepository implements MemberRepositoryInterface {
                 .getResultList();
         return findMembers.stream().filter(m -> m.getUsername().equals(name)).findFirst();
     }
+
+    /*
+     * ===================통역사 쿼리=====================
+     */
 
 
 

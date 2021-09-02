@@ -22,6 +22,7 @@ public class OrderService {
 
     private final OrderRepositoryInterface orderRepository;
     private final MemberRepositoryInterface memberRepository;
+
     @Transactional
     public String saveOrder(Long memberId,
                             String subject,

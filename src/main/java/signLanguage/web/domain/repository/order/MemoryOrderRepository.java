@@ -16,7 +16,7 @@ public class MemoryOrderRepository implements OrderRepositoryInterface {
 
     public String save(ReceptionOrder order){
         em.persist(order);
-        return null;
+        return order.getId();
     }
 
     public Optional<ReceptionOrder> findOne(String id){

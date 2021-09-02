@@ -48,7 +48,7 @@ public class MemberController {
 
         Long joinMemberId = memberService.join(member);
         log.info("가입을 진행한 Member = {}",joinMemberId);
-        return null;
+        return joinMemberId;
     }
 
 

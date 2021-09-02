@@ -9,6 +9,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import signLanguage.web.domain.common.CommonConst;
 import signLanguage.web.domain.entity.Member;
@@ -23,6 +25,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.net.http.HttpResponse;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -63,11 +66,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         PrincipalDetails principal = (PrincipalDetails) authResult.getPrincipal();
+        String authorities = principal.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
 
         String jwtToken = JWT.create()
                 .withSubject("authentication")
                 .withExpiresAt(new Date(System.currentTimeMillis()+(60000*10)))
                 .withClaim("id", principal.getMember().getId())
+                .withClaim("auth", authorities)
                 .withClaim("username", principal.getUsername())
                 .sign(Algorithm.HMAC512(CommonConst.PRIVATE_KEY));
 
