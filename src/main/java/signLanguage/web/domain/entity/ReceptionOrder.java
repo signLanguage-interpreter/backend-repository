@@ -6,8 +6,11 @@ import lombok.Setter;
 import signLanguage.web.domain.common.Classification;
 import signLanguage.web.domain.common.CommonLocalTime;
 import signLanguage.web.domain.common.OrderStatus;
+import signLanguage.web.domain.dto.OrderInfoDto;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -31,25 +34,36 @@ public class ReceptionOrder {
     private OrderStatus status;
 
     @Embedded
-    private CommonLocalTime commonLocalTime;
+    private CommonLocalTime commonLocalTime; //예약 생성 일자
+
+    private LocalDateTime receptionDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
 
-//    public void addMember(Member member){
-//        if(!member.getOrderList().contains(this)){
-//            this.member = member;
-//            member.getOrderList().add(this);
-//        }
-//    }
+    public void addMember(Member member){
+        if(!member.getOrderList().contains(this)){
+            this.member = member;
+            member.getOrderList().add(this);
+        }
+    }
 
-    public static ReceptionOrder createOrder(Member member){
+
+
+    public static ReceptionOrder createOrder(Member member,
+                                             String subject,
+                                             String content,
+                                             Classification classification,
+                                             LocalDateTime localDateTime){
         ReceptionOrder order = new ReceptionOrder();
-//        order.setSubject();
-//        order.setContent();
-//        order.setClassification();
+        order.setSubject(subject);
+        order.setContent(content);
+        order.setClassification(classification);
+        order.setCommonLocalTime(new CommonLocalTime());
+        order.setReceptionDate(localDateTime);
+        order.addMember(member);
         order.setStatus(OrderStatus.HOLD);
         return order;
     }

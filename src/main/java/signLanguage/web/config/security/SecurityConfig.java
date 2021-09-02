@@ -3,6 +3,7 @@ package signLanguage.web.config.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -17,6 +18,9 @@ import signLanguage.web.jwt.JwtAuthorizationFilter;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+//@EnableGlobalMethodSecurity(securedEnabled = true)
+// securedEnabled = true @Secured("ROLE_ADMIN) 어드민만 들어갈 수 있음(컨트롤러 메서드위) 시큐어 어노테이션 활성화
+// prePostEnabled = true @preAuthorize("hasRole('Role_ADMIN') or hasRole('Role_ADMIN')") 어노테이션 화성화
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final MemberRepository memberRepository;

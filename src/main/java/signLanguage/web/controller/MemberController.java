@@ -31,8 +31,7 @@ public class MemberController {
     @PostMapping("/join")
     public Object joinMember(@Valid @RequestBody MemberJoinDto memberJoinDto,
                            BindingResult bindingResult){
-        log.info("username = {}", memberJoinDto.getUsername());
-        log.info("password = {}", memberJoinDto.getPassword());
+
         Member member = Member.builder()
                 .birth(LocalDate.parse(memberJoinDto.getBirth(), DateTimeFormatter.ISO_DATE))
                 .cellPhone(memberJoinDto.getCellPhone())

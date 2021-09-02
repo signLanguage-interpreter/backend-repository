@@ -81,11 +81,11 @@ public class Member {
         return new ArrayList<>();
     }
 
-    public void addOrders(ReceptionOrder receptionOrder){
-        if(!this.getOrderList().contains(receptionOrder)){
-            this.getOrderList().add(receptionOrder);
-            receptionOrder.setMember(this);
-        }
-    }
+//    public void addOrders(ReceptionOrder receptionOrder){
+//        if(!this.getOrderList().contains(receptionOrder)){
+//            this.getOrderList().add(receptionOrder);
+//            receptionOrder.setMember(this);
+//        }
+//    }
 
 }

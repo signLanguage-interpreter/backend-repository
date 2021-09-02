@@ -16,9 +16,12 @@ import signLanguage.web.auth.PrincipalDetails;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.net.http.HttpResponse;
 import java.util.Date;
 
 @RequiredArgsConstructor
@@ -34,6 +37,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
             ObjectMapper objectMapper = new ObjectMapper();
             Member member = objectMapper.readValue(request.getInputStream(), Member.class);
+            log.info("Member {} / {}" , member.getUsername(), member.getPassword());
 
 
             UsernamePasswordAuthenticationToken authenticationToken =
@@ -69,6 +73,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         //토큰을 jwt를 헤더에 달아줌.
         response.addHeader("Authorization", "Bearer "+jwtToken);
+        Cookie cookie = new Cookie("jwt_token","Bearer"+jwtToken);
+        response.addCookie(cookie);
         log.info("로그인 성공");
     }
 }
