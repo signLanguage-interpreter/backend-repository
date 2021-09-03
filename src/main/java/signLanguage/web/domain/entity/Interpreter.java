@@ -23,7 +23,9 @@ public class Interpreter {
     @Column(name = "interpreter_id")
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     private Position position;
+
     private String introduce;
     private String imagePath;
 

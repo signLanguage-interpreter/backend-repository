@@ -13,7 +13,7 @@ spring:
 logging:
     level:
         org.hibernate.SQL: debug
-        org.hibernate.type: trace
+        org.hibernate.type: debug
 
 server:
     port: 5000

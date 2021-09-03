@@ -32,10 +32,6 @@ public class MemoryMemberRepository implements MemberRepositoryInterface {
         return findMembers.stream().filter(m -> m.getUsername().equals(name)).findFirst();
     }
 
-    /*
-     * ===================통역사 쿼리=====================
-     */
-
 
 
 

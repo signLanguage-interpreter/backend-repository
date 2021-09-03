@@ -47,14 +47,15 @@ public class Member {
     private List<ReceptionOrder> orderList = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "interpreter_id",updatable = false)
+    @JoinColumn(name = "interpreter_id")
     private Interpreter interpreter;
 
     public void addInterpreter(Interpreter interpreter){
-        if(this.interpreter == null){
-            this.interpreter = interpreter;
-            interpreter.setMember(this);
+        if(this.interpreter!=null){
+            throw new IllegalStateException("이미 통역사 정보가 존재합니다.");
         }
+        this.interpreter = interpreter;
+        interpreter.setMember(this);
     }
 
 

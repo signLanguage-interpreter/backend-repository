@@ -52,4 +52,36 @@ public class MemberController {
     }
 
 
+
+
+
+    //===============================test =================================================
+    @PostMapping("/managerJoin")
+    public Object joinManager(@Valid @RequestBody MemberJoinDto memberJoinDto,
+                             BindingResult bindingResult){
+
+        Member member = Member.builder()
+                .birth(LocalDate.parse(memberJoinDto.getBirth(), DateTimeFormatter.ISO_DATE))
+                .cellPhone(memberJoinDto.getCellPhone())
+                .eMail(memberJoinDto.getEMail())
+                .gender(memberJoinDto.isGender()? Gender.MAN: Gender.WOMAN)
+                .username(memberJoinDto.getUsername())
+                .password(bCryptPasswordEncoder.encode(memberJoinDto.getPassword()))
+                .userNickName(memberJoinDto.getUserNickName())
+                .commonLocalTime(new CommonLocalTime())
+                .build();
+
+        member.setRoles("ROLE_MANAGER");
+
+        if(bindingResult.hasErrors()){
+            return bindingResult.getAllErrors();
+        }
+
+        Long joinMemberId = memberService.join(member);
+        log.info("가입을 진행한 Manager = {}",joinMemberId);
+        return joinMemberId;
+    }
+
+
+
 }
