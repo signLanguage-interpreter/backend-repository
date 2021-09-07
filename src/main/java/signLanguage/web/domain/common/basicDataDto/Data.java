@@ -1,4 +1,4 @@
-package signLanguage.web.domain.common;
+package signLanguage.web.domain.common.basicDataDto;
 
 import lombok.Setter;
 

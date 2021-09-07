@@ -29,7 +29,7 @@ public class OrderInfoDto {
     @Size(max = 500, message = "내용은 500자 이내여야 해요.")
     private String content;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     @NotNull
     @Future(message = "날짜는 현재보다 미래여야해요.")
     private LocalDateTime receptionDate;

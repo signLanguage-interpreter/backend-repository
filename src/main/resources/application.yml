@@ -6,14 +6,14 @@ spring:
         driver-class-name: org.h2.Driver
     jpa:
         hibernate:
-            ddl-auto: create
+            ddl-auto: update
         show-sql: true
         open-in-view: true
 
 logging:
     level:
         org.hibernate.SQL: debug
-        org.hibernate.type: debug
+        org.hibernate.type: trace
 
 server:
-    port: 5000
+    port: 8080

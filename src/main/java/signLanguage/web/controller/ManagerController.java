@@ -3,24 +3,16 @@ package signLanguage.web.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import signLanguage.web.auth.PrincipalDetails;
-import signLanguage.web.domain.common.Annotation.ClassificationValid;
-import signLanguage.web.domain.common.Classification;
-import signLanguage.web.domain.common.Data;
+import signLanguage.web.domain.common.basicDataDto.Data;
 import signLanguage.web.domain.common.Position;
 import signLanguage.web.domain.dto.ManagerDto;
 import signLanguage.web.domain.entity.Interpreter;
-import signLanguage.web.domain.entity.Member;
 import signLanguage.web.servie.MemberService;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,7 +26,7 @@ public class ManagerController {
 
     @PostMapping("/addInfo")
     public Object addManagerInfo(@Valid @RequestBody ManagerDto managerDto, BindingResult bindingResult,
-                               @AuthenticationPrincipal PrincipalDetails principalDetails){
+                                 @AuthenticationPrincipal PrincipalDetails principalDetails){
         if(bindingResult.hasErrors()){
             return bindingResult.getAllErrors();
         }

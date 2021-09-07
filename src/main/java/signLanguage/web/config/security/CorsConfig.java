@@ -3,7 +3,6 @@ package signLanguage.web.config.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -23,7 +22,8 @@ public class CorsConfig {
         config.setAllowedOrigins(List.of("http://localhost:3000"));     // 모든 IP에 대해 응답 허용
         config.setAllowedMethods(Arrays.asList("GET","POST","PUT","PATCH","OPTIONS","DELETE"));
         config.addAllowedHeader("*");
-        source.registerCorsConfiguration("/**", config);
+        config.setExposedHeaders(Arrays.asList("Authorization"));
+        source.registerCorsConfiguration("/**", config.applyPermitDefaultValues());
         return new CorsFilter(source);
     }
 }

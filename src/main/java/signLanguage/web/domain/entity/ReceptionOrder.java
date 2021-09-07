@@ -6,10 +6,8 @@ import lombok.Setter;
 import signLanguage.web.domain.common.Classification;
 import signLanguage.web.domain.common.CommonLocalTime;
 import signLanguage.web.domain.common.OrderStatus;
-import signLanguage.web.domain.dto.OrderInfoDto;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 

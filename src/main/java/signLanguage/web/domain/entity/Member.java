@@ -50,8 +50,8 @@ public class Member {
     @JoinColumn(name = "interpreter_id")
     private Interpreter interpreter;
 
-    public void addInterpreter(Interpreter interpreter){
-        if(this.interpreter!=null){
+    public void addInterpreter(Interpreter interpreter) {
+        if (this.interpreter != null) {
             throw new IllegalStateException("이미 통역사 정보가 존재합니다.");
         }
         this.interpreter = interpreter;
@@ -61,7 +61,7 @@ public class Member {
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
-    private Active active = Active.ACTIVE ;
+    private Active active = Active.ACTIVE;
 
     @Embedded
     private CommonLocalTime commonLocalTime;
@@ -89,7 +89,7 @@ public class Member {
 
     }
 
-    public List<String> getRoleList(){
+    public List<String> getRoleList() {
         if (this.roles.length() > 0) {
             return Arrays.asList(this.roles.split(","));
         }
@@ -102,5 +102,4 @@ public class Member {
 //            receptionOrder.setMember(this);
 //        }
 //    }
-
 }

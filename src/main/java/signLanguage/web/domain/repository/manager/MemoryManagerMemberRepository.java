@@ -35,4 +35,5 @@ public class MemoryManagerMemberRepository implements ManagerMemberRepositoryInt
                 getResultList();
         return result;
     }
+
 }

@@ -2,12 +2,9 @@ package signLanguage.web.domain.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import signLanguage.web.domain.common.Annotation.ClassificationValid;
 import signLanguage.web.domain.common.Classification;
 import signLanguage.web.domain.common.Position;
-import signLanguage.web.domain.entity.Interpreter;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;

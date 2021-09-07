@@ -1,26 +1,21 @@
 package signLanguage.web.controller;
 
-import jdk.nashorn.api.tree.ArrayLiteralTree;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import signLanguage.web.auth.PrincipalDetails;
-import signLanguage.web.domain.common.Data;
+import signLanguage.web.domain.common.basicDataDto.Data;
+import signLanguage.web.domain.common.basicDataDto.TwoData;
+import signLanguage.web.domain.dto.MainBaseInfo;
 import signLanguage.web.domain.dto.OrderInfoDto;
 import signLanguage.web.domain.entity.Member;
-import signLanguage.web.domain.entity.ReceptionOrder;
 import signLanguage.web.servie.OrderService;
 
 import javax.validation.Valid;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Slf4j
@@ -47,27 +42,19 @@ public class ReceptionController {
     }
 
 
-    @GetMapping("/reception")
-    public ReceptionBaseInfo formReception(@AuthenticationPrincipal PrincipalDetails memberDetails){
-        Member member = memberDetails.getMember();
-        return new ReceptionBaseInfo(member.getId(), member.getUserNickName(), member.getCellPhone());
-    }
+    @GetMapping("/mainPage")
+    public Object showMainPage(@AuthenticationPrincipal PrincipalDetails principalDetails){
+        Map<OrderService.Grouping, List<MainBaseInfo>> groupingListMap = orderService.showUserPage(principalDetails.getMember().getId());
 
-    @lombok.Data
-    @AllArgsConstructor
-    static class ReceptionBaseInfo{
-        private Long id;
-        private String userNickName;
-        private String cellPhone;
+        for (Map.Entry<OrderService.Grouping, List<MainBaseInfo>> groupingListEntry : groupingListMap.entrySet()) {
+            return new TwoData<OrderService.Grouping, List<MainBaseInfo>>(groupingListEntry.getKey(),groupingListEntry.getValue());
+        }
+        return new RuntimeException();
     }
 
 
-
-
-
-    @GetMapping("/test")
-    public void formReception(){
-
+    @GetMapping("/recpetion/{receptionId}")
+    public void showDetailReception(@PathVariable String receptionId){
+        orderService.showDetailReceptionInfo(receptionId);
     }
-
 }
