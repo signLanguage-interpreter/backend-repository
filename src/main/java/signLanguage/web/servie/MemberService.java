@@ -47,6 +47,14 @@ public class MemberService {
     }
 
     @Transactional
+    public void modifyMember(Long id, String eMail, String password, String cellPhone){
+        Member findMember = findById(id);
+        findMember.setEMail(eMail);
+        findMember.setPassword(password);
+        findMember.setCellPhone(cellPhone);
+    }
+
+    @Transactional
     public Long addInterpreter(Long id, Position position, String introduce, String imagePath){
         Member member = memoryMemberRepository.findOne(id).get();//.orElseThrow(()->new IllegalStateException("null 입니다."));
         Interpreter interpreter = Interpreter.createAddInfo(position, introduce, imagePath, member);

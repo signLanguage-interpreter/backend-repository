@@ -7,6 +7,7 @@ import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
 import signLanguage.web.domain.common.Annotation.ClassificationValid;
 import signLanguage.web.domain.common.Classification;
+import signLanguage.web.domain.common.OrderStatus;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotBlank;
@@ -18,6 +19,8 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 public class OrderInfoDto {
+
+    private OrderStatus orderStatus;
 
     @NotBlank
     @NotNull(message = "입력된 제목이 없어요.")
@@ -38,9 +41,9 @@ public class OrderInfoDto {
     @ClassificationValid(enumClass = Classification.class, message = "유효하지 않습니다.")
     private Classification classification;
 
-    @NotNull(message = "통역사를 선택하지 않았어요.")
-    @Range(min = 1, max = 10, message = "통역사의 유효하지 않은 번호입니다.")
-    private Long interpreterId;
+//    @NotNull(message = "통역사를 선택하지 않았어요.")
+//    @Range(min = 1, max = 10, message = "통역사의 유효하지 않은 번호입니다.")
+//    private Long interpreterId;
 
 
 }

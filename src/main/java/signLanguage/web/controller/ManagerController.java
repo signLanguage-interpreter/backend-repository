@@ -9,8 +9,11 @@ import signLanguage.web.auth.PrincipalDetails;
 import signLanguage.web.domain.common.basicDataDto.Data;
 import signLanguage.web.domain.common.Position;
 import signLanguage.web.domain.dto.ManagerDto;
+import signLanguage.web.domain.entity.Comment;
 import signLanguage.web.domain.entity.Interpreter;
+import signLanguage.web.domain.entity.Member;
 import signLanguage.web.servie.MemberService;
+import signLanguage.web.servie.OrderService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -23,6 +26,7 @@ import java.util.stream.Collectors;
 public class ManagerController {
 
     private final MemberService memberService;
+    private final OrderService orderService;
 
     @PostMapping("/addInfo")
     public Object addManagerInfo(@Valid @RequestBody ManagerDto managerDto, BindingResult bindingResult,
@@ -64,6 +68,13 @@ public class ManagerController {
             this.introduce = interpreter.getIntroduce();
             this.imagePath = interpreter.getImagePath();
         }
+    }
+
+    @PostMapping("/postComment/{userId}/{receptionId}")
+    public void registryComment(@PathVariable Long userId,
+                                @PathVariable String receptionId,
+                                @RequestBody String comment){
+        orderService.registryCommentService(userId,receptionId,comment);
     }
 
 }

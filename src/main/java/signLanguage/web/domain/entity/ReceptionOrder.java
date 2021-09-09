@@ -9,6 +9,8 @@ import signLanguage.web.domain.common.OrderStatus;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -39,6 +41,11 @@ public class ReceptionOrder {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "receptionOrder")
+    private List<Comment> commentList = new ArrayList<>();
+
+
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "interpreter_id")

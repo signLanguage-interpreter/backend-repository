@@ -4,11 +4,11 @@ import lombok.Data;
 
 @Data
 public class TwoData<T,K>{
-    private T Data1;
-    private K Data2;
+    private T user;
+    private K regi_list;
 
     public TwoData(T data1, K data2) {
-        Data1 = data1;
-        Data2 = data2;
+        user = data1;
+        regi_list = data2;
     }
 }

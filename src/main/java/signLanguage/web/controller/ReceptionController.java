@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.*;
 import signLanguage.web.auth.PrincipalDetails;
 import signLanguage.web.domain.common.basicDataDto.Data;
 import signLanguage.web.domain.common.basicDataDto.TwoData;
+import signLanguage.web.domain.dto.CommentDto;
 import signLanguage.web.domain.dto.MainBaseInfo;
 import signLanguage.web.domain.dto.OrderInfoDto;
+import signLanguage.web.domain.dto.RecpetionDetailDto;
 import signLanguage.web.domain.entity.Member;
 import signLanguage.web.servie.OrderService;
 
@@ -42,19 +44,25 @@ public class ReceptionController {
     }
 
 
-    @GetMapping("/mainPage")
+    @GetMapping("/main")
     public Object showMainPage(@AuthenticationPrincipal PrincipalDetails principalDetails){
         Map<OrderService.Grouping, List<MainBaseInfo>> groupingListMap = orderService.showUserPage(principalDetails.getMember().getId());
 
         for (Map.Entry<OrderService.Grouping, List<MainBaseInfo>> groupingListEntry : groupingListMap.entrySet()) {
-            return new TwoData<OrderService.Grouping, List<MainBaseInfo>>(groupingListEntry.getKey(),groupingListEntry.getValue());
+            return new TwoData<>(groupingListEntry.getKey(),groupingListEntry.getValue());
         }
         return new RuntimeException();
     }
 
 
-    @GetMapping("/recpetion/{receptionId}")
-    public void showDetailReception(@PathVariable String receptionId){
-        orderService.showDetailReceptionInfo(receptionId);
+    @GetMapping("/reception/{userId}/{receptionId}")
+    public TwoData<OrderInfoDto,List<CommentDto>> showDetailReception(@PathVariable String receptionId,
+                                                                      @PathVariable Long userId,
+                                                                      @AuthenticationPrincipal PrincipalDetails principalDetails){
+        if(principalDetails.getMember().getId() != userId){
+            throw new RuntimeException("no authentication");
+        }
+        return orderService.showDetailReceptionInfo(receptionId);
     }
+
 }
