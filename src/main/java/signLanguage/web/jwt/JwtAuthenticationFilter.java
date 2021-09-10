@@ -68,6 +68,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         PrincipalDetails principal = (PrincipalDetails) authResult.getPrincipal();
         String authorities = principal.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
 
+        //create token
         String jwtToken = JWT.create()
                 .withSubject("authentication")
                 .withExpiresAt(new Date(System.currentTimeMillis()+(60000*10)))
@@ -78,6 +79,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         //토큰을 jwt를 헤더에 달아줌.
         response.addHeader("Authorization", "Bearer "+jwtToken);
+
+        //solve token
+        String auth = JWT.require(Algorithm.HMAC512(CommonConst.PRIVATE_KEY)).build().verify(jwtToken).getClaim("auth").asString();
+
+        //role
+        response.addHeader("auth", auth);
         log.info("로그인 성공");
     }
 }

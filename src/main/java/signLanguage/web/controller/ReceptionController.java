@@ -6,8 +6,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import signLanguage.web.auth.PrincipalDetails;
-import signLanguage.web.domain.common.basicDataDto.Data;
-import signLanguage.web.domain.common.basicDataDto.TwoData;
+import signLanguage.web.domain.common.basicDataDto.*;
 import signLanguage.web.domain.dto.CommentDto;
 import signLanguage.web.domain.dto.MainBaseInfo;
 import signLanguage.web.domain.dto.OrderInfoDto;
@@ -18,6 +17,8 @@ import signLanguage.web.servie.OrderService;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
@@ -49,20 +50,35 @@ public class ReceptionController {
         Map<OrderService.Grouping, List<MainBaseInfo>> groupingListMap = orderService.showUserPage(principalDetails.getMember().getId());
 
         for (Map.Entry<OrderService.Grouping, List<MainBaseInfo>> groupingListEntry : groupingListMap.entrySet()) {
+            if(groupingListEntry.getValue().get(0).getReceptionId() == null){
+                return new TwoData<>(groupingListEntry.getKey(),null);
+            }
             return new TwoData<>(groupingListEntry.getKey(),groupingListEntry.getValue());
         }
         return new RuntimeException();
     }
+//     replace Two data is difference thing that basicDataInfo another Data class
+//    @lombok.Data
+//    static class Data<T>{
+//        private T user;
+//        public Data(T user) {
+//            this.user = user;
+//        }
+//    }
 
 
     @GetMapping("/reception/{userId}/{receptionId}")
     public TwoData<OrderInfoDto,List<CommentDto>> showDetailReception(@PathVariable String receptionId,
                                                                       @PathVariable Long userId,
                                                                       @AuthenticationPrincipal PrincipalDetails principalDetails){
+        validationMember(userId, principalDetails);
+        return orderService.showDetailReceptionInfo(receptionId);
+    }
+
+    private void validationMember(Long userId, PrincipalDetails principalDetails) {
         if(principalDetails.getMember().getId() != userId){
             throw new RuntimeException("no authentication");
         }
-        return orderService.showDetailReceptionInfo(receptionId);
     }
 
 }

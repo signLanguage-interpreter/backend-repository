@@ -30,8 +30,8 @@ public class MemoryOrderRepository implements OrderRepositoryInterface {
 
     public List<MainBaseInfo> findMemberJoinOrder(Long id){
         List<MainBaseInfo> MainBaseInfo = em.createQuery("select new signLanguage.web.domain.dto.MainBaseInfo(m.id,m.userNickName,m.cellPhone,m.username,m.eMail,o.id,o.status,o.classification,o.subject,o.receptionDate) " +
-                "from ReceptionOrder o " +
-                "join o.member m " +
+                "from Member m  " +
+                "left join m.orderList o " +
                 "where m.id = :memberId", MainBaseInfo.class)
                 .setParameter("memberId", id)
                 .getResultList();

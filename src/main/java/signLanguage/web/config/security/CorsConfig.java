@@ -22,7 +22,7 @@ public class CorsConfig {
         config.setAllowedOrigins(List.of("http://localhost:3000"));     // 모든 IP에 대해 응답 허용
         config.setAllowedMethods(Arrays.asList("GET","POST","PUT","PATCH","OPTIONS","DELETE"));
         config.addAllowedHeader("*");
-        config.setExposedHeaders(Arrays.asList("Authorization"));
+        config.setExposedHeaders(Arrays.asList("Authorization","auth"));
         source.registerCorsConfiguration("/**", config.applyPermitDefaultValues());
         return new CorsFilter(source);
     }
