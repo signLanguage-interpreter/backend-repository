@@ -53,7 +53,7 @@ public class MemberController {
 
 
 
-    @PostMapping("/modifyMebmer/{userId}")
+    @PostMapping("/modifyMember/{userId}")
     public Object modifyMember(@PathVariable Long userId,
                              @Valid @RequestBody MemberJoinDto memberJoinDto,
                              BindingResult bindingResult,
@@ -77,7 +77,7 @@ public class MemberController {
         }
     }
 
-    @GetMapping("/modifyMebmer/{userId}")
+    @GetMapping("/modifyMember/{userId}")
     public MemberJoinDto modifyForm(@AuthenticationPrincipal PrincipalDetails principalDetails,
                            @PathVariable Long userId){
 
@@ -89,11 +89,11 @@ public class MemberController {
 
 
 
-
-
-
-
     //============================================================\
+
+
+
+
     @PostMapping("/managerJoin")
     public Object joinManager(@Valid @RequestBody MemberJoinDto memberJoinDto,
                              BindingResult bindingResult, HttpServletRequest request) {

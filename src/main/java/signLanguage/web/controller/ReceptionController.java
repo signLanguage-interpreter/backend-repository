@@ -67,7 +67,7 @@ public class ReceptionController {
 //    }
 
 
-    @GetMapping("/reception/{userId}/{receptionId}")
+    @GetMapping("/regist/{userId}/{receptionId}")
     public TwoData<OrderInfoDto,List<CommentDto>> showDetailReception(@PathVariable String receptionId,
                                                                       @PathVariable Long userId,
                                                                       @AuthenticationPrincipal PrincipalDetails principalDetails){
