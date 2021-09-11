@@ -39,7 +39,7 @@ public class ManagerController {
         return new Data<Long>(addInfo);
     }
 
-    @PostMapping("/modifyInfo/{interpreterId}")
+    @PostMapping("/modifyManager/{interpreterId}")
     public Object modifyManagerInfo(@Valid @RequestBody ManagerDto managerDto, BindingResult bindingResult, @PathVariable Long interpreterId){
         if(!bindingResult.hasErrors()){
             memberService.modifyInterpreter(interpreterId, managerDto.getPosition(), managerDto.getIntroduce(), managerDto.getImagePath());
@@ -49,7 +49,7 @@ public class ManagerController {
     }
 
 
-    @GetMapping("/modifyInfo")
+    @GetMapping("/modifyManager")
     public ManagerReturnDto getModifyManagerInfo(@AuthenticationPrincipal PrincipalDetails principalDetails){
         List<Interpreter> interpreters = memberService.printInterpreter(principalDetails.getMember().getId());
         return interpreters.stream().map(i -> new ManagerReturnDto(i)).collect(Collectors.toList()).get(0);

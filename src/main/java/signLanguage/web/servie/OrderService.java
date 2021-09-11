@@ -63,6 +63,9 @@ public class OrderService {
                 .collect(groupingBy(o -> new OrderInfoDto(o.getStatus(), o.getSubject(), o.getContent(), o.getReceptionDate(), o.getClassification()),
                         Collectors.mapping(o -> new CommentDto(o.getCommentId(), o.getUserNickName(), o.getUserNickName(), o.getRegistryTime()), toList())));
         for (Map.Entry<OrderInfoDto, List<CommentDto>> orderInfoDtoListEntry : collect.entrySet()) {
+            if(orderInfoDtoListEntry.getValue().get(0).getId()==null){
+                return new TwoData<OrderInfoDto,List<CommentDto>>(orderInfoDtoListEntry.getKey(),null);
+            }
             return new TwoData<OrderInfoDto,List<CommentDto>>(orderInfoDtoListEntry.getKey(),orderInfoDtoListEntry.getValue());
         }
         return null;

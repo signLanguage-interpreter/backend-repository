@@ -43,7 +43,7 @@ public class MemoryOrderRepository implements OrderRepositoryInterface {
     public List<RecpetionDetailDto> findOneWithComment(String receptionId) {
 
 
-        List<RecpetionDetailDto> result = em.createQuery("select new signLanguage.web.domain.dto.RecpetionDetailDto(re.subject,re.content,re.receptionDate,re.classification,re.status, co.id, co.Content, m.userNickName, co.registryTime) " +
+        List<RecpetionDetailDto> result = em.createQuery("select new signLanguage.web.domain.dto.RecpetionDetailDto(re.subject,re.content,re.receptionDate,re.classification,re.status, co.id, co.content, m.userNickName, co.registryTime) " +
                 "from ReceptionOrder re " +
                 "left join re.commentList co " +
                 "left join co.member m " +

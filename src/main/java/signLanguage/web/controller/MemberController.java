@@ -3,6 +3,8 @@ package signLanguage.web.controller;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.BindingResult;
@@ -11,6 +13,7 @@ import signLanguage.web.auth.PrincipalDetails;
 import signLanguage.web.domain.common.CommonLocalTime;
 import signLanguage.web.domain.common.Gender;
 import signLanguage.web.domain.dto.MemberJoinDto;
+import signLanguage.web.domain.dto.MemberModifyDto;
 import signLanguage.web.domain.entity.Member;
 import signLanguage.web.servie.MemberService;
 
@@ -52,15 +55,16 @@ public class MemberController {
 
 
 
-
-    @PostMapping("/modifyMember/{userId}")
+    @PostMapping("/user/modifyMember/{userId}")
     public Object modifyMember(@PathVariable Long userId,
-                             @Valid @RequestBody MemberJoinDto memberJoinDto,
-                             BindingResult bindingResult,
-                             @AuthenticationPrincipal PrincipalDetails principalDetails){
+                               @Valid @RequestBody MemberModifyDto memberModifyDto,
+                               BindingResult bindingResult,
+                               @AuthenticationPrincipal PrincipalDetails principalDetails){
         validationMember(userId, principalDetails);
-        if (validationBindingResult(bindingResult)) return bindingResult.getAllErrors();
-        memberService.modifyMember(userId, memberJoinDto.getEMail(), memberJoinDto.getPassword(), memberJoinDto.getCellPhone());
+        if (validationBindingResult(bindingResult)){
+            return bindingResult.getAllErrors();
+        }
+        memberService.modifyMember(userId, memberModifyDto.getEMail(), bCryptPasswordEncoder.encode(memberModifyDto.getPassword()), memberModifyDto.getCellPhone());
         return null;
     }
 
@@ -77,19 +81,21 @@ public class MemberController {
         }
     }
 
-    @GetMapping("/modifyMember/{userId}")
+
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_USER')")
+    @GetMapping("/user/modifyMember/{userId}")
     public MemberJoinDto modifyForm(@AuthenticationPrincipal PrincipalDetails principalDetails,
                            @PathVariable Long userId){
 
         validationMember(userId, principalDetails);
         Member findMember = memberService.findById(userId);
-        return new MemberJoinDto(findMember.getUserNickName(), findMember.getUsername(), findMember.getEMail(), findMember.getPassword(), findMember.getCellPhone(), findMember.getBirth().toString(),findMember.getGender()==Gender.MAN?true:false);
+        return new MemberJoinDto(findMember.getUserNickName(), findMember.getUsername(), findMember.getEMail(), findMember.getCellPhone(), findMember.getBirth().toString(),findMember.getGender()==Gender.MAN?true:false);
 
     }
 
 
 
-    //============================================================\
+    //============================================================
 
 
 
