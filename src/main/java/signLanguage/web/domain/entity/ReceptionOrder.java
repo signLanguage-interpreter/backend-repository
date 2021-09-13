@@ -47,17 +47,17 @@ public class ReceptionOrder {
 
 
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "interpreter_id")
-//    private Interpreter interpreter;
-//
-//
-//    public void addInterpreter(Interpreter interpreter){
-//        if(!interpreter.getOrderList().contains(this)){
-//            interpreter.getOrderList().add(this);
-//            this.interpreter = interpreter;
-//        }
-//    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "interpreter_id")
+    private Interpreter interpreter;
+
+
+    public void addInterpreter(Interpreter interpreter){
+        if(!interpreter.getOrderList().contains(this)){
+            interpreter.getOrderList().add(this);
+            this.interpreter = interpreter;
+        }
+    }
 
     public void addMember(Member member){
         if(!member.getOrderList().contains(this)){

@@ -3,7 +3,9 @@ package signLanguage.web.domain.repository.order;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import signLanguage.web.domain.common.OrderStatus;
 import signLanguage.web.domain.dto.MainBaseInfo;
+import signLanguage.web.domain.dto.OrderManagerDto;
 import signLanguage.web.domain.dto.RecpetionDetailDto;
 import signLanguage.web.domain.entity.ReceptionOrder;
 
@@ -21,6 +23,43 @@ public class MemoryOrderRepository implements OrderRepositoryInterface {
     public String save(ReceptionOrder order){
         em.persist(order);
         return order.getId();
+    }
+
+    public Long findAllCount(){
+        return em.createQuery("select count(o) from ReceptionOrder o", Long.class).getSingleResult();
+    }
+
+    public List findAll(int start, int end){
+        /* 성능 문제 개선*/
+        //        List<OrderManagerDto> resultList = em.createQuery("select new signLanguage.web.domain.dto.OrderManagerDto(o.id,o.subject,o.receptionDate,o.status,count(o)) " +
+//                "from ReceptionOrder o " +
+//                "where o.status = :sub " +
+//                "order by o.receptionDate", OrderManagerDto.class)
+//                .setParameter("sub", OrderStatus.HOLD)
+//                .setFirstResult(start)
+//                .setMaxResults(end)
+//                .getResultList();
+//        return resultList;
+
+
+        List<Object[]> resultList = em.createNativeQuery("select X.rnum, X.RECEPTION_ID, X.RECEPTION_DATE, X.SUBJECT, X.STATUS from" +
+                "(select rownum as rnum, A.RECEPTION_ID, A.RECEPTION_DATE, A.SUBJECT, A.STATUS from " +
+                "(select RECEPTION_DATE, SUBJECT, STATUS, RECEPTION_ID from RECEPTION where STATUS = :status order by RECEPTION_DATE asc ) as A " +
+                "where rownum <= :endnum) as X " +
+                "where X.rnum >= :startnum")
+                .setParameter("status", OrderStatus.HOLD.toString())
+                .setParameter("endnum", end)
+                .setParameter("startnum", start)
+                .getResultList();
+
+        for (Object[] objects : resultList) {
+            System.out.println("objects[0] = " + objects[0]);
+            System.out.println("objects[1] = " + objects[1]);
+            System.out.println("objects[2] = " + objects[2]);
+            System.out.println("objects[3] = " + objects[3]);
+            System.out.println("objects[4] = " + objects[4]);
+        }
+        return resultList;
     }
 
     public Optional<ReceptionOrder> findOne(String id){
@@ -41,8 +80,6 @@ public class MemoryOrderRepository implements OrderRepositoryInterface {
 
     @Override
     public List<RecpetionDetailDto> findOneWithComment(String receptionId) {
-
-
         List<RecpetionDetailDto> result = em.createQuery("select new signLanguage.web.domain.dto.RecpetionDetailDto(re.subject,re.content,re.receptionDate,re.classification,re.status, co.id, co.content, m.userNickName, co.registryTime) " +
                 "from ReceptionOrder re " +
                 "left join re.commentList co " +

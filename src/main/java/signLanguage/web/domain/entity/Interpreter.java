@@ -29,10 +29,10 @@ public class Interpreter {
     private String introduce;
     private String imagePath;
 
-    //
-//    @OneToMany(mappedBy = "interpreter", fetch = FetchType.LAZY, cascade = P)
-//    private List<ReceptionOrder> orderList = new ArrayList<>();
-//
+
+    @OneToMany(mappedBy = "interpreter", fetch = FetchType.LAZY)
+    private List<ReceptionOrder> orderList = new ArrayList<>();
+
     @OneToOne(mappedBy = "interpreter", fetch = FetchType.LAZY)
     private Member member;
 
