@@ -42,13 +42,12 @@ public class MemoryOrderRepository implements OrderRepositoryInterface {
 //                .getResultList();
 //        return resultList;
 
-
-        List<Object[]> resultList = em.createNativeQuery("select X.rnum, X.RECEPTION_ID, X.RECEPTION_DATE, X.SUBJECT, X.STATUS from" +
-                "(select rownum as rnum, A.RECEPTION_ID, A.RECEPTION_DATE, A.SUBJECT, A.STATUS from " +
-                "(select RECEPTION_DATE, SUBJECT, STATUS, RECEPTION_ID from RECEPTION where STATUS = :status order by RECEPTION_DATE asc ) as A " +
+        List<Object[]> resultList = em.createNativeQuery("select X.rnum, X.RECEPTION_ID, X.RECEPTION_DATE, X.SUBJECT, X.STATUS, X.CLASSIFICATION from" +
+                "(select rownum as rnum, A.RECEPTION_ID, A.RECEPTION_DATE, A.SUBJECT, A.STATUS, A.CLASSIFICATION from " +
+                "(select RECEPTION_DATE, SUBJECT, STATUS, RECEPTION_ID, CLASSIFICATION from RECEPTION where STATUS = :status order by RECEPTION_DATE asc ) as A " +
                 "where rownum <= :endnum) as X " +
                 "where X.rnum >= :startnum")
-                .setParameter("status", status)
+                .setParameter("status", status.toString())
                 .setParameter("endnum", end)
                 .setParameter("startnum", start)
                 .getResultList();

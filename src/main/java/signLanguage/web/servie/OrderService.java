@@ -17,7 +17,9 @@ import signLanguage.web.domain.repository.comment.CommentRepositoryInterface;
 import signLanguage.web.domain.repository.member.MemberRepositoryInterface;
 import signLanguage.web.domain.repository.order.OrderRepositoryInterface;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -37,20 +39,34 @@ public class OrderService {
     private final CommentRepositoryInterface commentRepository;
     private final PagingComponent pagingComponent;
 
-    public TwoData<OrderManagerPagingDto, List> getManagerMainAll(Long curPage ,OrderStatus status){
+    public ManagerMainList<OrderManagerPagingDto, List> getManagerMainAll(Long curPage ,OrderStatus status){
         Long allAmount = orderRepository.findAllCount(status);
         OrderManagerPagingDto pagingDto = new OrderManagerPagingDto(pagingComponent.getStart(curPage),
                 pagingComponent.getEnd(curPage),
-                pagingComponent.getStartPage(curPage),
-                pagingComponent.getEndPage(curPage),
+                pagingComponent.getStartPage(curPage, allAmount),
+                pagingComponent.getEndPage(curPage, allAmount),
                 pagingComponent.getRealEnd(allAmount),
-                pagingComponent.getStartPageExist(curPage),
+                pagingComponent.getStartPageExist(curPage, allAmount),
                 pagingComponent.getEndPageExist(curPage, allAmount));
-
+        
         List<Object[]> allInfo = orderRepository.findAll(pagingComponent.getStart(curPage),pagingComponent.getEnd(curPage),status);
-        List<MainBaseInfo> collect = allInfo.stream().map(a -> new MainBaseInfo((Long) a[0], (String) a[1], (LocalDateTime) a[2], (String) a[3], (OrderStatus) a[4])).collect(toList());
+        if(allInfo.get(0)[0]==null){
+            return new ManagerMainList<>(pagingDto, null);
+        }
+        List<MainBaseInfo> collect = allInfo.stream().map(
+                a -> new MainBaseInfo( Long.valueOf(a[0].toString()),
+                        (String) a[1],
+                        localDateTimeFromTimestamp((Timestamp) a[2]),
+                        (String) a[3],
+                        OrderStatus.valueOf((String) a[4]),
+                        Classification.valueOf((String) a[5]))).collect(toList());
 
-        return new TwoData<>(pagingDto, collect);
+        return new ManagerMainList<>(pagingDto, collect);
+    }
+
+    protected LocalDateTime localDateTimeFromTimestamp(Timestamp timestamp){
+        return LocalDateTime
+                .ofInstant(timestamp.toInstant(), ZoneOffset.ofHours(0));
     }
 
 

@@ -54,34 +54,34 @@ public class MemberService {
         findMember.setCellPhone(cellPhone);
     }
 
-    @Transactional
-    public Long addInterpreter(Long id, Position position, String introduce, String imagePath){
-        Member member = memoryMemberRepository.findOne(id).get();//.orElseThrow(()->new IllegalStateException("null 입니다."));
-        Interpreter interpreter = Interpreter.createAddInfo(position, introduce, imagePath, member);
-        System.out.println(member.getInterpreter().getIntroduce());
-        if(interpreter == null){
-            throw new IllegalStateException("통역사가 저장되지 않았어요.");
-        }
-        Long interpreterId = memoryManagerMemberRepository.save(interpreter);
-//        memoryMemberRepository.save(member);
-        return interpreterId;
-    }
-
-
-    @Transactional
-    public void modifyInterpreter(Long id,Position position, String introduce, String imagePath){
-        Interpreter interpreter = memoryManagerMemberRepository.findOne(id).orElseThrow(()->new NullPointerException("null 입니다."));
-        interpreter.setImagePath(imagePath);
-        interpreter.setPosition(position);
-        interpreter.setIntroduce(introduce);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Interpreter> printInterpreter(Long id){
-        List<Interpreter> interpreterWithMember = memoryManagerMemberRepository.findInterpreterWithMember(id);
-        if(interpreterWithMember.isEmpty()){
-            throw new NullPointerException("null 값이 들어갔어요.");
-        }
-        return interpreterWithMember;
-    }
+//    @Transactional
+//    public Long addInterpreter(Long id, Position position, String introduce, String imagePath){
+//        Member member = memoryMemberRepository.findOne(id).get();//.orElseThrow(()->new IllegalStateException("null 입니다."));
+//        Interpreter interpreter = Interpreter.createAddInfo(position, introduce, imagePath, member);
+//        System.out.println(member.getInterpreter().getIntroduce());
+//        if(interpreter == null){
+//            throw new IllegalStateException("통역사가 저장되지 않았어요.");
+//        }
+//        Long interpreterId = memoryManagerMemberRepository.save(interpreter);
+////        memoryMemberRepository.save(member);
+//        return interpreterId;
+//    }
+//
+//
+//    @Transactional
+//    public void modifyInterpreter(Long id,Position position, String introduce, String imagePath){
+//        Interpreter interpreter = memoryManagerMemberRepository.findOne(id).orElseThrow(()->new NullPointerException("null 입니다."));
+//        interpreter.setImagePath(imagePath);
+//        interpreter.setPosition(position);
+//        interpreter.setIntroduce(introduce);
+//    }
+//
+//    @Transactional(readOnly = true)
+//    public List<Interpreter> printInterpreter(Long id){
+//        List<Interpreter> interpreterWithMember = memoryManagerMemberRepository.findInterpreterWithMember(id);
+//        if(interpreterWithMember.isEmpty()){
+//            throw new NullPointerException("null 값이 들어갔어요.");
+//        }
+//        return interpreterWithMember;
+//    }
 }

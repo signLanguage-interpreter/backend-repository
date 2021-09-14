@@ -23,20 +23,22 @@ public class MainBaseInfo {
     private LocalDateTime receptionDate;
     private OrderStatus status;
     private String subject;
+    private Classification classification;
 
     public MainBaseInfo(Long id,
                         String receptionId,
                         LocalDateTime receptionDate,
                         String subject
-                        ,OrderStatus status) {
+                        ,OrderStatus status
+                        ,Classification classification) {
         this.id = id;
         this.receptionId = receptionId;
         this.receptionDate = receptionDate;
         this.status = status;
         this.subject = subject;
+        this.classification = classification;
     }
 
-    private Classification classification;
 
     public MainBaseInfo(Long id,
                         String userNickName,
