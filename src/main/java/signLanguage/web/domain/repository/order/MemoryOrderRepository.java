@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import signLanguage.web.domain.common.OrderStatus;
 import signLanguage.web.domain.dto.MainBaseInfo;
-import signLanguage.web.domain.dto.OrderManagerDto;
 import signLanguage.web.domain.dto.RecpetionDetailDto;
 import signLanguage.web.domain.entity.ReceptionOrder;
 
@@ -25,11 +24,13 @@ public class MemoryOrderRepository implements OrderRepositoryInterface {
         return order.getId();
     }
 
-    public Long findAllCount(){
-        return em.createQuery("select count(o) from ReceptionOrder o", Long.class).getSingleResult();
+    public Long findAllCount(OrderStatus status){
+        return em.createQuery("select count(o) from ReceptionOrder o where o.status=:status", Long.class)
+                .setParameter("status", status)
+                .getSingleResult();
     }
 
-    public List findAll(int start, int end){
+    public List findAll(Long start, Long end, OrderStatus status){
         /* 성능 문제 개선*/
         //        List<OrderManagerDto> resultList = em.createQuery("select new signLanguage.web.domain.dto.OrderManagerDto(o.id,o.subject,o.receptionDate,o.status,count(o)) " +
 //                "from ReceptionOrder o " +
@@ -47,18 +48,11 @@ public class MemoryOrderRepository implements OrderRepositoryInterface {
                 "(select RECEPTION_DATE, SUBJECT, STATUS, RECEPTION_ID from RECEPTION where STATUS = :status order by RECEPTION_DATE asc ) as A " +
                 "where rownum <= :endnum) as X " +
                 "where X.rnum >= :startnum")
-                .setParameter("status", OrderStatus.HOLD.toString())
+                .setParameter("status", status)
                 .setParameter("endnum", end)
                 .setParameter("startnum", start)
                 .getResultList();
 
-        for (Object[] objects : resultList) {
-            System.out.println("objects[0] = " + objects[0]);
-            System.out.println("objects[1] = " + objects[1]);
-            System.out.println("objects[2] = " + objects[2]);
-            System.out.println("objects[3] = " + objects[3]);
-            System.out.println("objects[4] = " + objects[4]);
-        }
         return resultList;
     }
 

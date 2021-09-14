@@ -1,5 +1,6 @@
 package signLanguage.web.domain.repository.order;
 
+import signLanguage.web.domain.common.OrderStatus;
 import signLanguage.web.domain.dto.MainBaseInfo;
 import signLanguage.web.domain.dto.RecpetionDetailDto;
 import signLanguage.web.domain.entity.ReceptionOrder;
@@ -12,4 +13,6 @@ public interface OrderRepositoryInterface {
     public Optional<ReceptionOrder> findOne(String id);
     public List<MainBaseInfo> findMemberJoinOrder(Long id);
     public List<RecpetionDetailDto> findOneWithComment(String receptionId);
+    public Long findAllCount(OrderStatus status);
+    public List findAll(Long start, Long end, OrderStatus status);
 }

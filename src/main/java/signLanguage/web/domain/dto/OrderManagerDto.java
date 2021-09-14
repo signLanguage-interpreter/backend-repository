@@ -11,9 +11,11 @@ public class OrderManagerDto {
     private String subject;
     private LocalDateTime localDateTime;
     private OrderStatus status;
-    private Long orderCount;
 
-    public OrderManagerDto(String receptionId, String subject, LocalDateTime localDateTime, OrderStatus status) {
+    public OrderManagerDto(String receptionId,
+                           String subject,
+                           LocalDateTime localDateTime,
+                           OrderStatus status) {
         this.receptionId = receptionId;
         this.subject = subject;
         this.localDateTime = localDateTime;

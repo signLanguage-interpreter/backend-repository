@@ -6,11 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import signLanguage.web.domain.common.Classification;
+import signLanguage.web.domain.common.OrderStatus;
 import signLanguage.web.domain.common.basicDataDto.TwoData;
-import signLanguage.web.domain.dto.CommentDto;
-import signLanguage.web.domain.dto.MainBaseInfo;
-import signLanguage.web.domain.dto.OrderInfoDto;
-import signLanguage.web.domain.dto.RecpetionDetailDto;
+import signLanguage.web.domain.dto.*;
+import signLanguage.web.domain.dto.component.PagingComponent;
 import signLanguage.web.domain.entity.Comment;
 import signLanguage.web.domain.entity.Member;
 import signLanguage.web.domain.entity.ReceptionOrder;
@@ -36,6 +35,24 @@ public class OrderService {
     private final OrderRepositoryInterface orderRepository;
     private final MemberRepositoryInterface memberRepository;
     private final CommentRepositoryInterface commentRepository;
+    private final PagingComponent pagingComponent;
+
+    public TwoData<OrderManagerPagingDto, List> getManagerMainAll(Long curPage ,OrderStatus status){
+        Long allAmount = orderRepository.findAllCount(status);
+        OrderManagerPagingDto pagingDto = new OrderManagerPagingDto(pagingComponent.getStart(curPage),
+                pagingComponent.getEnd(curPage),
+                pagingComponent.getStartPage(curPage),
+                pagingComponent.getEndPage(curPage),
+                pagingComponent.getRealEnd(allAmount),
+                pagingComponent.getStartPageExist(curPage),
+                pagingComponent.getEndPageExist(curPage, allAmount));
+
+        List<Object[]> allInfo = orderRepository.findAll(pagingComponent.getStart(curPage),pagingComponent.getEnd(curPage),status);
+        List<MainBaseInfo> collect = allInfo.stream().map(a -> new MainBaseInfo((Long) a[0], (String) a[1], (LocalDateTime) a[2], (String) a[3], (OrderStatus) a[4])).collect(toList());
+
+        return new TwoData<>(pagingDto, collect);
+    }
+
 
     @Transactional
     public String saveOrder(Long memberId,
