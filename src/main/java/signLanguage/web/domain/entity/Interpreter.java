@@ -5,7 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.MultipartFile;
 import signLanguage.web.domain.common.Position;
+import signLanguage.web.domain.common.UploadName;
+import signLanguage.web.domain.dto.UploadImage;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -27,7 +30,9 @@ public class Interpreter {
     private Position position;
 
     private String introduce;
-    private String imagePath;
+
+    @Embedded
+    private UploadName uploadName;
 
 
     @OneToMany(mappedBy = "interpreter", fetch = FetchType.LAZY)
@@ -36,13 +41,13 @@ public class Interpreter {
     @OneToOne(mappedBy = "interpreter", fetch = FetchType.LAZY)
     private Member member;
 
-    public static Interpreter createAddInfo(Position position, String introduce, String imagePath, Member member){
+
+    public static Interpreter createInterpreter(String introduce, Position position, UploadName uploadName,Member member){
         Interpreter interpreter = new Interpreter();
-        interpreter.setImagePath(imagePath);
         interpreter.setIntroduce(introduce);
         interpreter.setPosition(position);
+        interpreter.setUploadName(uploadName);
         member.addInterpreter(interpreter);
-
         return interpreter;
     }
 

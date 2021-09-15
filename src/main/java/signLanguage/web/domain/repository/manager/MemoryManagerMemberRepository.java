@@ -29,16 +29,11 @@ public class MemoryManagerMemberRepository implements ManagerMemberRepositoryInt
     }
 
     @Override
-    public List<Interpreter> findInterpreterWithMember(Long id) {
-        return null;
+    public Optional<Member> findMemberWithInterpreter(Long id) {
+        Member result = em.createQuery("select m from Member m " +
+                "join fetch m.interpreter i", Member.class).//setParameter("memberId", id).
+                getSingleResult();
+        return Optional.of(result);
     }
-
-//    @Override
-//    public List<Interpreter> findInterpreterWithMember(Long id) {
-//        List<Interpreter> result = em.createQuery("select i from Interpreter i " +
-//                "join fetch i.member", Interpreter.class).//setParameter("memberId", id).
-//                getResultList();
-//        return result;
-//    }
 
 }

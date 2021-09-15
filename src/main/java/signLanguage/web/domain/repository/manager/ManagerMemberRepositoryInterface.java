@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface ManagerMemberRepositoryInterface {
     public Long save(Interpreter interpreter);
     public Optional<Interpreter> findOne(Long id);
-    public List<Interpreter> findInterpreterWithMember(Long id);
+    public Optional<Member> findMemberWithInterpreter(Long id);
 }

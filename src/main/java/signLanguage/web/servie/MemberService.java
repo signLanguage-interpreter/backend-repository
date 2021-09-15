@@ -1,12 +1,14 @@
 package signLanguage.web.servie;
 
 import com.sun.xml.bind.v2.runtime.unmarshaller.Intercepter;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import signLanguage.web.domain.common.Position;
 import signLanguage.web.domain.dto.ManagerDto;
+import signLanguage.web.domain.dto.UploadImage;
 import signLanguage.web.domain.entity.Interpreter;
 import signLanguage.web.domain.entity.Member;
 import signLanguage.web.domain.repository.manager.ManagerMemberRepositoryInterface;
@@ -46,6 +48,34 @@ public class MemberService {
         return memoryMemberRepository.findOne(id).get();
     }
 
+    public MemberBasicInfo printMemberBasicInfo(Long id){
+        Member member = findById(id);
+        MemberBasicInfo memberBasicInfo = new MemberBasicInfo(member.getId(),
+                member.getUserNickName(),
+                member.getUsername(),
+                member.getEMail(),
+                member.getCellPhone());
+
+        return memberBasicInfo;
+    }
+
+    @Data
+    public static class MemberBasicInfo{
+        private Long id;
+        private String userNickName;
+        private String username;
+        private String eMail;
+        private String cellPhone;
+
+        public MemberBasicInfo(Long id, String userNickName, String username, String eMail, String cellPhone) {
+            this.id = id;
+            this.userNickName = userNickName;
+            this.username = username;
+            this.eMail = eMail;
+            this.cellPhone = cellPhone;
+        }
+    }
+
     @Transactional
     public void modifyMember(Long id, String eMail, String password, String cellPhone){
         Member findMember = findById(id);
@@ -53,6 +83,7 @@ public class MemberService {
         findMember.setPassword(password);
         findMember.setCellPhone(cellPhone);
     }
+
 
 //    @Transactional
 //    public Long addInterpreter(Long id, Position position, String introduce, String imagePath){

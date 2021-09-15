@@ -48,7 +48,7 @@ public class OrderService {
                 pagingComponent.getRealEnd(allAmount),
                 pagingComponent.getStartPageExist(curPage, allAmount),
                 pagingComponent.getEndPageExist(curPage, allAmount));
-        
+
         List<Object[]> allInfo = orderRepository.findAll(pagingComponent.getStart(curPage),pagingComponent.getEnd(curPage),status);
         if(allInfo.get(0)[0]==null){
             return new ManagerMainList<>(pagingDto, null);
@@ -104,13 +104,13 @@ public class OrderService {
         return null;
     }
 
-    @Transactional
-    public void registryCommentService(Long userId, String receptionId, String comment){
-        Member member = memberRepository.findOne(userId).get();
-        ReceptionOrder receptionOrder = orderRepository.findOne(receptionId).get();
-        Comment commentEntity = Comment.createComment(member, receptionOrder, comment);
-        commentRepository.save(commentEntity);
-    }
+//    @Transactional
+//    public void registryCommentService(Long userId, String receptionId, String comment){
+//        Member member = memberRepository.findOne(userId).get();
+//        ReceptionOrder receptionOrder = orderRepository.findOne(receptionId).get();
+//        Comment commentEntity = Comment.createComment(member, receptionOrder, comment);
+//        commentRepository.save(commentEntity);
+//    }
 
     @Data
     public static class Grouping{

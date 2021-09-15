@@ -2,6 +2,7 @@ package signLanguage.web.domain.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 import signLanguage.web.domain.common.Annotation.ClassificationValid;
 import signLanguage.web.domain.common.Classification;
 import signLanguage.web.domain.common.Position;
@@ -21,6 +22,7 @@ public class ManagerDto {
     @Size(max = 100, message = "100자 이내로 입력해야해요.")
     private String introduce;
 
-    private String imagePath;
+    private MultipartFile imageFile;
+
 
 }

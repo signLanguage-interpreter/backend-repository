@@ -2,21 +2,30 @@ package signLanguage.web.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.asm.Advice;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import signLanguage.web.auth.PrincipalDetails;
 import signLanguage.web.domain.common.basicDataDto.Data;
 import signLanguage.web.domain.common.Position;
 import signLanguage.web.domain.dto.ManagerDto;
+import signLanguage.web.domain.dto.ManagerReturnDto;
+import signLanguage.web.domain.dto.UploadImage;
+import signLanguage.web.domain.dto.component.FileStore;
 import signLanguage.web.domain.entity.Comment;
 import signLanguage.web.domain.entity.Interpreter;
 import signLanguage.web.domain.entity.Member;
+import signLanguage.web.domain.repository.manager.ManagerMemberRepositoryInterface;
+import signLanguage.web.servie.ManagerService;
 import signLanguage.web.servie.MemberService;
 import signLanguage.web.servie.OrderService;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -25,8 +34,29 @@ import java.util.stream.Collectors;
 @RequestMapping("/manager")
 public class ManagerController {
 
-    private final MemberService memberService;
-    private final OrderService orderService;
+    private final ManagerService managerService;
+    private final FileStore fileStore;
+
+    @GetMapping("/managerInfo")
+    public ManagerReturnDto getManagerInfo(@AuthenticationPrincipal PrincipalDetails principalDetails){
+        return managerService.printInterpreter(principalDetails.getMember().getId());
+
+    }
+
+    @PostMapping("/managerInfo")
+    public void postManagerInfo(@Valid @RequestBody ManagerDto managerDto, BindingResult bindingResult,
+                                @AuthenticationPrincipal PrincipalDetails principalDetails) throws IOException {
+        MultipartFile imageFile = managerDto.getImageFile();
+        UploadImage uploadImage = fileStore.storeImage(imageFile);
+
+        managerService.addInterpreter(managerDto.getIntroduce(),
+                managerDto.getPosition(),
+                uploadImage,
+                principalDetails.getMember().getId());
+
+    }
+
+
 
 //    @PostMapping("/addInfo")
 //    public Object addManagerInfo(@Valid @RequestBody ManagerDto managerDto, BindingResult bindingResult,
@@ -69,12 +99,12 @@ public class ManagerController {
 //            this.imagePath = interpreter.getImagePath();
 //        }
 //    }
-
-    @PostMapping("/postComment/{userId}/{receptionId}")
-    public void registryComment(@PathVariable Long userId,
-                                @PathVariable String receptionId,
-                                @RequestBody String comment){
-        orderService.registryCommentService(userId,receptionId,comment);
-    }
+//
+//    @PostMapping("/postComment/{userId}/{receptionId}")
+//    public void registryComment(@PathVariable Long userId,
+//                                @PathVariable String receptionId,
+//                                @RequestBody String comment){
+//        orderService.registryCommentService(userId,receptionId,comment);
+//    }
 
 }
