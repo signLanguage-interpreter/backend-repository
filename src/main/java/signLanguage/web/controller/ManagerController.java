@@ -11,18 +11,19 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import signLanguage.web.auth.PrincipalDetails;
+import signLanguage.web.domain.common.OrderStatus;
 import signLanguage.web.domain.common.Position;
-import signLanguage.web.domain.dto.ManagerDto;
-import signLanguage.web.domain.dto.ManagerReturnDto;
-import signLanguage.web.domain.dto.UploadImage;
+import signLanguage.web.domain.dto.*;
 import signLanguage.web.domain.dto.component.FileStore;
 import signLanguage.web.servie.ManagerService;
+import signLanguage.web.servie.OrderService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 @Controller
 @Slf4j
@@ -31,14 +32,15 @@ import java.nio.charset.StandardCharsets;
 public class ManagerController {
 
     private final ManagerService managerService;
+    private final OrderService orderService;
     private final FileStore fileStore;
 
     @ResponseBody
     @GetMapping("/managerInfo")
     public ManagerReturnDto getManagerInfo(@AuthenticationPrincipal PrincipalDetails principalDetails){
         ManagerReturnDto managerReturnDto = managerService.printInterpreter(principalDetails.getMember().getId());
-        System.out.println("managerReturnDto.toString() = " + managerReturnDto.toString());
-        return managerService.printInterpreter(principalDetails.getMember().getId());
+//        return managerService.printInterpreter(principalDetails.getMember().getId());
+        return managerReturnDto;
     }
 
     @ResponseBody
@@ -46,14 +48,9 @@ public class ManagerController {
     public void postManagerInfo(@Valid ManagerDto managerDto, BindingResult bindingResult,
                                 @AuthenticationPrincipal PrincipalDetails principalDetails,
                                 HttpServletRequest request) throws IOException {
-
-        log.info("{} ==========================================={}=========================================== {}", managerDto.getImageFile(), managerDto.getIntroduce(), managerDto.getPosition());
         MultipartFile imageFile = managerDto.getImageFile();
-
         UploadImage uploadImage = fileStore.storeImage(imageFile,request);
-
         System.out.println(managerDto.getPosition().substring(13, managerDto.getPosition().length() - 2));
-
         Position byPosition = Position.findByPosition(managerDto.getPosition().substring(13, managerDto.getPosition().length() - 2));
         System.out.println(managerDto.getPosition().substring(13, managerDto.getPosition().length() - 2));
         managerService.addInterpreter(managerDto.getIntroduce().substring(14,managerDto.getIntroduce().length()-2),
@@ -62,10 +59,25 @@ public class ManagerController {
                 principalDetails.getMember().getId());
 
     }
+
+
     @ResponseBody
     @GetMapping("/images/{filename}")
     public Resource downloadImage(@PathVariable String filename,HttpServletRequest request) throws MalformedURLException {
         return new UrlResource("file:" + fileStore.getFullPath(filename,request));
+    }
+
+
+    @PostMapping("/receipt/{orderId}")
+    public void receiptReception(@PathVariable String orderId,
+                                 @RequestParam OrderStatus status,
+            @AuthenticationPrincipal PrincipalDetails principalDetails)
+    // 매니저는 신뢰받는 권한이기 때문에 접수에 제한로직을 걸지 않음.
+    {
+        if(managerService.receiptReception(orderId , principalDetails.getMember().getId(),status)){
+            return ;
+        }
+        throw new IllegalStateException();
     }
 
 }

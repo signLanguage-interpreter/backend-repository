@@ -36,18 +36,10 @@ public class OrderService {
 
     private final OrderRepositoryInterface orderRepository;
     private final MemberRepositoryInterface memberRepository;
-    private final CommentRepositoryInterface commentRepository;
     private final PagingComponent pagingComponent;
 
     public ManagerMainList<OrderManagerPagingDto, List> getManagerMainAll(Long curPage ,OrderStatus status){
-        Long allAmount = orderRepository.findAllCount(status);
-        OrderManagerPagingDto pagingDto = new OrderManagerPagingDto(pagingComponent.getStart(curPage),
-                pagingComponent.getEnd(curPage),
-                pagingComponent.getStartPage(curPage, allAmount),
-                pagingComponent.getEndPage(curPage, allAmount),
-                pagingComponent.getRealEnd(allAmount),
-                pagingComponent.getStartPageExist(curPage, allAmount),
-                pagingComponent.getEndPageExist(curPage, allAmount));
+        OrderManagerPagingDto pagingDto = getOrderManagerPaging(curPage, status);
 
         List<Object[]> allInfo = orderRepository.findAll(pagingComponent.getStart(curPage),pagingComponent.getEnd(curPage),status);
 
@@ -67,6 +59,28 @@ public class OrderService {
                         Classification.valueOf((String) a[5]))).collect(toList());
 
         return new ManagerMainList<>(pagingDto, collect);
+    }
+
+
+    public ManagerMainList<OrderManagerPagingDto, List> receptionReady(Long interpreterId, Long curPage, OrderStatus status) {
+
+        List<ReceptionOrder> interpreterJoinOrder = orderRepository.findInterpreterJoinOrder(interpreterId);
+        List<MainBaseInfo> collect = interpreterJoinOrder.stream().map((o) -> new MainBaseInfo(interpreterId, o.getId(), o.getReceptionDate(), o.getSubject(), o.getStatus(), o.getClassification())).collect(toList());
+
+        OrderManagerPagingDto pagingDto = getOrderManagerPaging(curPage, status);
+        return new ManagerMainList<>(pagingDto, collect);
+    }
+
+    private OrderManagerPagingDto getOrderManagerPaging(Long curPage, OrderStatus status) {
+        Long allAmount = orderRepository.findAllCount(status);
+        OrderManagerPagingDto pagingDto = new OrderManagerPagingDto(pagingComponent.getStart(curPage),
+                pagingComponent.getEnd(curPage),
+                pagingComponent.getStartPage(curPage, allAmount),
+                pagingComponent.getEndPage(curPage, allAmount),
+                pagingComponent.getRealEnd(allAmount),
+                pagingComponent.getStartPageExist(curPage, allAmount),
+                pagingComponent.getEndPageExist(curPage, allAmount));
+        return pagingDto;
     }
 
     protected LocalDateTime localDateTimeFromTimestamp(Timestamp timestamp){

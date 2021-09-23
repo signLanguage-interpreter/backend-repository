@@ -13,6 +13,7 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @AllArgsConstructor
+
 public class MemberModifyDto {
     @Email(message = "이메일 형식이 아니에요.")
     private String eMail;

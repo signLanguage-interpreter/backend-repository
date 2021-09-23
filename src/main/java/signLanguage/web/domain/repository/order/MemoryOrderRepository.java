@@ -59,6 +59,10 @@ public class MemoryOrderRepository implements OrderRepositoryInterface {
         return Optional.of(em.find(ReceptionOrder.class, id));
     }
 
+    public List<ReceptionOrder> findInterpreterJoinOrder(Long interpreterId){
+        List<ReceptionOrder> orderList = em.createQuery("select o from ReceptionOrder o where o.interpreter.id =:Id", ReceptionOrder.class).setParameter("Id", interpreterId).getResultList();
+        return orderList;
+    }
 
     public List<MainBaseInfo> findMemberJoinOrder(Long id){
         List<MainBaseInfo> MainBaseInfo = em.createQuery("select new signLanguage.web.domain.dto.MainBaseInfo(m.id,m.userNickName,m.cellPhone,m.username,m.eMail,o.id,o.status,o.classification,o.subject,o.receptionDate) " +

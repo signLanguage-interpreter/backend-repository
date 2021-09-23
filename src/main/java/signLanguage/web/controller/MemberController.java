@@ -12,13 +12,17 @@ import org.springframework.web.bind.annotation.*;
 import signLanguage.web.auth.PrincipalDetails;
 import signLanguage.web.domain.common.CommonLocalTime;
 import signLanguage.web.domain.common.Gender;
+import signLanguage.web.domain.dto.CommentDto;
+import signLanguage.web.domain.dto.CommentDto.ReturnComment;
 import signLanguage.web.domain.dto.MemberJoinDto;
 import signLanguage.web.domain.dto.MemberModifyDto;
 import signLanguage.web.domain.entity.Member;
+import signLanguage.web.domain.repository.comment.CommentRepositoryInterface;
 import signLanguage.web.servie.MemberService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -26,7 +30,6 @@ import java.time.format.DateTimeFormatter;
 @Slf4j
 @RequiredArgsConstructor
 public class MemberController {
-    
     private final MemberService memberService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -79,6 +82,15 @@ public class MemberController {
         if (principalDetails.getMember().getId() != userId) {
             throw new RuntimeException("비정상적인 접근입니다.");
         }
+    }
+
+    @PostMapping("/user/{orderId}/comment")
+    public void registryComment(@Valid ReturnComment commentDto,
+                                @PathVariable String orderId,
+                                @AuthenticationPrincipal PrincipalDetails principalDetails){
+        log.info("=============={}",commentDto.getContent());
+        memberService.regComment(commentDto,principalDetails.getMember().getId(),orderId);
+
     }
 
 

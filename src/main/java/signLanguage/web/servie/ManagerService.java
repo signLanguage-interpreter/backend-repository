@@ -4,15 +4,20 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import signLanguage.web.domain.common.OrderStatus;
 import signLanguage.web.domain.common.Position;
 import signLanguage.web.domain.common.UploadName;
 import signLanguage.web.domain.dto.ManagerReturnDto;
 import signLanguage.web.domain.dto.UploadImage;
 import signLanguage.web.domain.entity.Interpreter;
 import signLanguage.web.domain.entity.Member;
+import signLanguage.web.domain.entity.ReceptionOrder;
 import signLanguage.web.domain.repository.manager.ManagerMemberRepositoryInterface;
+import signLanguage.web.domain.repository.order.OrderRepositoryInterface;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -21,6 +26,7 @@ import java.util.Optional;
 public class ManagerService {
 
     private final ManagerMemberRepositoryInterface managerMemberRepository;
+    private final OrderRepositoryInterface orderRepository;
 
     public ManagerReturnDto printInterpreter(Long id){
         Member member = managerMemberRepository.findMemberWithInterpreter(id).get();
@@ -39,8 +45,8 @@ public class ManagerService {
         throw new NullPointerException();
     }
 
-    public boolean validation(Optional<Interpreter> findInterpreter){
-        if(findInterpreter.isPresent()){
+    public boolean validation(Optional<? extends Object> optional){
+        if(optional.isPresent()){
             return true;
         }
         return false;
@@ -64,5 +70,20 @@ public class ManagerService {
         interpreter.setIntroduce(introduce);
         interpreter.setPosition(position);
         interpreter.setUploadName(uploadName);
+    }
+
+    @Transactional
+    public boolean receiptReception(String orderId, Long memberId, OrderStatus status){
+        Optional<ReceptionOrder> findOrder = orderRepository.findOne(orderId);
+        Optional<Member> memberWithInterpreter = managerMemberRepository.findMemberWithInterpreter(memberId);
+        if(validation(findOrder) && validation(memberWithInterpreter)){
+            if(memberWithInterpreter.get().getInterpreter()==null){
+                throw new NullPointerException("값이 존재하지 않습니다.");
+            }
+            findOrder.get().setInterpreter(memberWithInterpreter.get().getInterpreter());
+            findOrder.get().setStatus(status);
+            return true;
+        }
+        return false;
     }
 }

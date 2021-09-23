@@ -15,7 +15,7 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
     private Long id;
-    private String content="[인수인계 사항 : " + LocalDateTime.now() + "]";
+    private String content;
     private LocalDateTime registryTime = LocalDateTime.now();
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -7,16 +7,23 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import signLanguage.web.domain.common.Position;
+import signLanguage.web.domain.dto.CommentDto;
 import signLanguage.web.domain.dto.ManagerDto;
 import signLanguage.web.domain.dto.UploadImage;
+import signLanguage.web.domain.entity.Comment;
 import signLanguage.web.domain.entity.Interpreter;
 import signLanguage.web.domain.entity.Member;
+import signLanguage.web.domain.entity.ReceptionOrder;
+import signLanguage.web.domain.repository.comment.CommentRepositoryInterface;
 import signLanguage.web.domain.repository.manager.ManagerMemberRepositoryInterface;
 import signLanguage.web.domain.repository.member.MemoryMemberRepository;
+import signLanguage.web.domain.repository.order.OrderRepositoryInterface;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static signLanguage.web.domain.dto.CommentDto.*;
 
 @Service
 @Slf4j
@@ -25,7 +32,9 @@ import java.util.stream.Collectors;
 public class MemberService {
 
     private final MemoryMemberRepository memoryMemberRepository;
+    private final CommentRepositoryInterface commentRepository;
     private final ManagerMemberRepositoryInterface memoryManagerMemberRepository;
+    private final OrderRepositoryInterface orderRepository;
 
     @Transactional
     public Long join(Member member) {
@@ -57,6 +66,14 @@ public class MemberService {
                 member.getCellPhone());
 
         return memberBasicInfo;
+    }
+
+    @Transactional
+    public void regComment(ReturnComment commentDto, Long id, String orderId) {
+        Optional<Member> findMember = memoryMemberRepository.findOne(id);
+        Optional<ReceptionOrder> findOrder = orderRepository.findOne(orderId);
+        Comment comment = Comment.createComment(findMember.get(), findOrder.get(), commentDto.getContent());
+        commentRepository.save(comment);
     }
 
     @Data
