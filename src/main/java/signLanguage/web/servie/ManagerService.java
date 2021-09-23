@@ -25,13 +25,18 @@ public class ManagerService {
     public ManagerReturnDto printInterpreter(Long id){
         Member member = managerMemberRepository.findMemberWithInterpreter(id).get();
         Interpreter interpreter = member.getInterpreter();
-        if(validation(Optional.of(interpreter))){
+        if(interpreter == null){
+            System.out.println("null이떴습니다잡닺다ㅏㅂㅈ답ㅈ다ㅏㅂㅈ = ");
             return null;
         }
 
-        UploadName uploadName = interpreter.getUploadName();
-        ManagerReturnDto managerReturnDto = new ManagerReturnDto(interpreter.getId(), interpreter.getPosition(), interpreter.getIntroduce(),uploadName);
-        return managerReturnDto;
+        if(validation(Optional.of(interpreter))){
+            UploadName uploadName = interpreter.getUploadName();
+            ManagerReturnDto managerReturnDto = new ManagerReturnDto(interpreter.getId(), interpreter.getPosition().getValue(), interpreter.getIntroduce(),uploadName);
+            return managerReturnDto;
+        }
+
+        throw new NullPointerException();
     }
 
     public boolean validation(Optional<Interpreter> findInterpreter){

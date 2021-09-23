@@ -9,6 +9,8 @@ spring:
             ddl-auto: update
         show-sql: true
         open-in-view: true
+        properties:
+            default_batch_fetch_size: 100
 
 logging:
     level:
@@ -17,5 +19,6 @@ logging:
 
 server:
     port: 5000
+
 
 

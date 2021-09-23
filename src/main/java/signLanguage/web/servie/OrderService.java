@@ -10,7 +10,6 @@ import signLanguage.web.domain.common.OrderStatus;
 import signLanguage.web.domain.common.basicDataDto.TwoData;
 import signLanguage.web.domain.dto.*;
 import signLanguage.web.domain.dto.component.PagingComponent;
-import signLanguage.web.domain.entity.Comment;
 import signLanguage.web.domain.entity.Member;
 import signLanguage.web.domain.entity.ReceptionOrder;
 import signLanguage.web.domain.repository.comment.CommentRepositoryInterface;
@@ -20,13 +19,14 @@ import signLanguage.web.domain.repository.order.OrderRepositoryInterface;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
-import static org.yaml.snakeyaml.nodes.NodeId.mapping;
 
 @Service
 @Slf4j
@@ -50,9 +50,14 @@ public class OrderService {
                 pagingComponent.getEndPageExist(curPage, allAmount));
 
         List<Object[]> allInfo = orderRepository.findAll(pagingComponent.getStart(curPage),pagingComponent.getEnd(curPage),status);
-        if(allInfo.get(0)[0]==null){
+
+        if(allInfo.isEmpty()){
             return new ManagerMainList<>(pagingDto, null);
         }
+
+//        if(allInfo.get(0)[0]==null){
+//            return new ManagerMainList<>(pagingDto, null);
+//        }
         List<MainBaseInfo> collect = allInfo.stream().map(
                 a -> new MainBaseInfo( Long.valueOf(a[0].toString()),
                         (String) a[1],
@@ -104,13 +109,6 @@ public class OrderService {
         return null;
     }
 
-//    @Transactional
-//    public void registryCommentService(Long userId, String receptionId, String comment){
-//        Member member = memberRepository.findOne(userId).get();
-//        ReceptionOrder receptionOrder = orderRepository.findOne(receptionId).get();
-//        Comment commentEntity = Comment.createComment(member, receptionOrder, comment);
-//        commentRepository.save(commentEntity);
-//    }
 
     @Data
     public static class Grouping{

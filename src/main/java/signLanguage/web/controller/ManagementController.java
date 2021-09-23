@@ -24,14 +24,15 @@ public class ManagementController {
     private final OrderService orderService;
     private final PagingComponent pagingComponent;
 
-    @GetMapping("/test")
+    @GetMapping("") //manager/info ? page= 1 & status=HOLD
     public ManagerMainList managerMainPage(@RequestParam Long page,
                                 @RequestParam OrderStatus status){
+        log.info("{}, {} ===============",page, status);
         return orderService.getManagerMainAll(page, status);
     }
 
     //메인화면 매니저정보
-    @GetMapping("/test1")
+    @GetMapping("/main")
     public MemberService.MemberBasicInfo managerMain(@AuthenticationPrincipal PrincipalDetails principalDetails){
         return memberService.printMemberBasicInfo(principalDetails.getMember().getId());
     }

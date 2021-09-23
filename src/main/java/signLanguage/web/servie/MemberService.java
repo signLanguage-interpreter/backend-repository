@@ -28,27 +28,27 @@ public class MemberService {
     private final ManagerMemberRepositoryInterface memoryManagerMemberRepository;
 
     @Transactional
-    public Long join(Member member){
-        if(validation(member.getUsername())){
+    public Long join(Member member) {
+        if (validation(member.getUsername())) {
             throw new IllegalStateException("이미 존재하는 회원입니다.");
         }
         Long savedMemberId = memoryMemberRepository.save(member);
         return savedMemberId;
     }
 
-    public boolean validation(String name){
+    public boolean validation(String name) {
         Optional<Member> findMember = memoryMemberRepository.findByName(name);
-        if(findMember.isPresent()){
+        if (findMember.isPresent()) {
             return true;
         }
         return false;
     }
 
-    public Member findById(Long id){
+    public Member findById(Long id) {
         return memoryMemberRepository.findOne(id).get();
     }
 
-    public MemberBasicInfo printMemberBasicInfo(Long id){
+    public MemberBasicInfo printMemberBasicInfo(Long id) {
         Member member = findById(id);
         MemberBasicInfo memberBasicInfo = new MemberBasicInfo(member.getId(),
                 member.getUserNickName(),
@@ -60,7 +60,7 @@ public class MemberService {
     }
 
     @Data
-    public static class MemberBasicInfo{
+    public static class MemberBasicInfo {
         private Long id;
         private String userNickName;
         private String username;
@@ -77,42 +77,10 @@ public class MemberService {
     }
 
     @Transactional
-    public void modifyMember(Long id, String eMail, String password, String cellPhone){
+    public void modifyMember(Long id, String eMail, String password, String cellPhone) {
         Member findMember = findById(id);
         findMember.setEMail(eMail);
         findMember.setPassword(password);
         findMember.setCellPhone(cellPhone);
     }
-
-
-//    @Transactional
-//    public Long addInterpreter(Long id, Position position, String introduce, String imagePath){
-//        Member member = memoryMemberRepository.findOne(id).get();//.orElseThrow(()->new IllegalStateException("null 입니다."));
-//        Interpreter interpreter = Interpreter.createAddInfo(position, introduce, imagePath, member);
-//        System.out.println(member.getInterpreter().getIntroduce());
-//        if(interpreter == null){
-//            throw new IllegalStateException("통역사가 저장되지 않았어요.");
-//        }
-//        Long interpreterId = memoryManagerMemberRepository.save(interpreter);
-////        memoryMemberRepository.save(member);
-//        return interpreterId;
-//    }
-//
-//
-//    @Transactional
-//    public void modifyInterpreter(Long id,Position position, String introduce, String imagePath){
-//        Interpreter interpreter = memoryManagerMemberRepository.findOne(id).orElseThrow(()->new NullPointerException("null 입니다."));
-//        interpreter.setImagePath(imagePath);
-//        interpreter.setPosition(position);
-//        interpreter.setIntroduce(introduce);
-//    }
-//
-//    @Transactional(readOnly = true)
-//    public List<Interpreter> printInterpreter(Long id){
-//        List<Interpreter> interpreterWithMember = memoryManagerMemberRepository.findInterpreterWithMember(id);
-//        if(interpreterWithMember.isEmpty()){
-//            throw new NullPointerException("null 값이 들어갔어요.");
-//        }
-//        return interpreterWithMember;
-//    }
 }

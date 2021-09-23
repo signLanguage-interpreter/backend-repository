@@ -18,4 +18,13 @@ public enum Position {
     public String getValue() {
         return value;
     }
+
+    public static Position findByPosition(String positions) {
+        for(Position position : Position.values()) {
+            if(position.getValue().equals(positions)) {
+                return position;
+            }
+        }
+        throw new RuntimeException();
+    }
 }

@@ -6,7 +6,7 @@ import javax.persistence.Converter;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
-@Converter(autoApply = true)
+@Converter(autoApply = false)
 public class DBTimestampToLocalDateTime implements AttributeConverter<LocalDateTime, Timestamp> {
 
     @Override

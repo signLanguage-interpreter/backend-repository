@@ -28,9 +28,5 @@ public class ReceptionConfig implements WebMvcConfigurer {
                 .allowedOrigins("http://localhost:3000");
     }
 
-    @Bean
-    public static HttpServletRequest getRequest() {
-        ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        return attr.getRequest();
-    }
+
 }

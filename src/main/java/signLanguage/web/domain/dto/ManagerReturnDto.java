@@ -14,14 +14,24 @@ import javax.validation.constraints.Size;
 public class ManagerReturnDto {
 
     private Long id;
-    private Position position;
+    private String position;
     private String introduce;
     private UploadName uploadName;
 
-    public ManagerReturnDto(Long id, Position position, String introduce, UploadName uploadName) {
+    public ManagerReturnDto(Long id, String position, String introduce, UploadName uploadName) {
         this.id = id;
         this.position = position;
         this.introduce = introduce;
         this.uploadName = uploadName;
+    }
+
+    @Override
+    public String toString() {
+        return "ManagerReturnDto{" +
+                "id=" + id +
+                ", position=" + position +
+                ", introduce='" + introduce + '\'' +
+                ", uploadName=" + uploadName +
+                '}';
     }
 }
