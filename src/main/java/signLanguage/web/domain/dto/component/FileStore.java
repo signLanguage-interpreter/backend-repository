@@ -33,7 +33,10 @@ public class FileStore {
         String uuid = UUID.randomUUID().toString();
         String storeFileName = uuid + "." + originalFilename.substring(pos + 1);
 
+        //여기서 저장
         multipartFile.transferTo(new File(getFullPath(storeFileName, request)));
+        //여기서 저장
+
         return new UploadImage(originalFilename, storeFileName);
 
     }

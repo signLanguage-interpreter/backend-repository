@@ -2,17 +2,16 @@ package signLanguage.web.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StreamUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import signLanguage.web.auth.PrincipalDetails;
 import signLanguage.web.domain.common.OrderStatus;
 import signLanguage.web.domain.common.Position;
+import signLanguage.web.domain.common.basicDataDto.TwoData;
 import signLanguage.web.domain.dto.*;
 import signLanguage.web.domain.dto.component.FileStore;
 import signLanguage.web.servie.ManagerService;
@@ -22,8 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 @Controller
 @Slf4j
@@ -37,17 +34,27 @@ public class ManagerController {
 
     @ResponseBody
     @GetMapping("/managerInfo")
-    public ManagerReturnDto getManagerInfo(@AuthenticationPrincipal PrincipalDetails principalDetails){
+    public ManagerReturnDto getManagerInfo(@AuthenticationPrincipal PrincipalDetails principalDetails, HttpServletRequest request) throws MalformedURLException {
         ManagerReturnDto managerReturnDto = managerService.printInterpreter(principalDetails.getMember().getId());
-//        return managerService.printInterpreter(principalDetails.getMember().getId());
+        UrlResource urlResource = new UrlResource("file:" + fileStore.getFullPath(managerReturnDto.getUploadName().getStoreFileName(), request));
         return managerReturnDto;
+//        TwoData<ManagerReturnDto,UrlResource>(managerReturnDto,
+//        return managerReturnDto;
     }
+
+//    @ResponseBody
+//    @GetMapping("/images/{filename}")
+//    public UrlResource downloadImage(@PathVariable String filename, HttpServletRequest request) throws MalformedURLException {
+//        return new UrlResource("file:" + fileStore.getFullPath(filename,request));
+//    }
 
     @ResponseBody
     @PostMapping(value = "/managerInfo")
-    public void postManagerInfo(@Valid ManagerDto managerDto, BindingResult bindingResult,
+    public void postManagerInfo(@Valid ManagerDto managerDto,
+                                BindingResult bindingResult,
                                 @AuthenticationPrincipal PrincipalDetails principalDetails,
                                 HttpServletRequest request) throws IOException {
+
         MultipartFile imageFile = managerDto.getImageFile();
         UploadImage uploadImage = fileStore.storeImage(imageFile,request);
         System.out.println(managerDto.getPosition().substring(13, managerDto.getPosition().length() - 2));
@@ -63,7 +70,7 @@ public class ManagerController {
 
     @ResponseBody
     @GetMapping("/images/{filename}")
-    public Resource downloadImage(@PathVariable String filename,HttpServletRequest request) throws MalformedURLException {
+    public UrlResource downloadImage(@PathVariable String filename, HttpServletRequest request) throws MalformedURLException {
         return new UrlResource("file:" + fileStore.getFullPath(filename,request));
     }
 

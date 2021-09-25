@@ -1,5 +1,8 @@
 package signLanguage.web.domain.common;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public enum Position {
     MANAGER("과장"),
     STAFF("사원"),
@@ -21,6 +24,7 @@ public enum Position {
 
     public static Position findByPosition(String positions) {
         for(Position position : Position.values()) {
+            log.info("{}=============={}",position.getValue(),position);
             if(position.getValue().equals(positions)) {
                 return position;
             }

@@ -1,9 +1,7 @@
 package signLanguage.web.controller;
 
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -12,17 +10,14 @@ import org.springframework.web.bind.annotation.*;
 import signLanguage.web.auth.PrincipalDetails;
 import signLanguage.web.domain.common.CommonLocalTime;
 import signLanguage.web.domain.common.Gender;
-import signLanguage.web.domain.dto.CommentDto;
 import signLanguage.web.domain.dto.CommentDto.ReturnComment;
 import signLanguage.web.domain.dto.MemberJoinDto;
 import signLanguage.web.domain.dto.MemberModifyDto;
 import signLanguage.web.domain.entity.Member;
-import signLanguage.web.domain.repository.comment.CommentRepositoryInterface;
 import signLanguage.web.servie.MemberService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
