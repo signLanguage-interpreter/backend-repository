@@ -60,7 +60,14 @@ public class MemoryOrderRepository implements OrderRepositoryInterface {
     }
 
     public List<ReceptionOrder> findInterpreterJoinOrder(Long interpreterId){
-        List<ReceptionOrder> orderList = em.createQuery("select o from ReceptionOrder o where o.interpreter.id =:Id", ReceptionOrder.class).setParameter("Id", interpreterId).getResultList();
+        List<ReceptionOrder> orderList = em.createQuery("select o from ReceptionOrder o " +
+                                                                "join fetch o.member " +
+                                                                "join fetch o.interpreter i " +
+                                                                "join fetch i.member " +
+                                                                "where i.id =:Id",
+                                                                ReceptionOrder.class)
+                .setParameter("Id", interpreterId)
+                .getResultList();
         return orderList;
     }
 

@@ -38,15 +38,7 @@ public class ManagerController {
         ManagerReturnDto managerReturnDto = managerService.printInterpreter(principalDetails.getMember().getId());
         UrlResource urlResource = new UrlResource("file:" + fileStore.getFullPath(managerReturnDto.getUploadName().getStoreFileName(), request));
         return managerReturnDto;
-//        TwoData<ManagerReturnDto,UrlResource>(managerReturnDto,
-//        return managerReturnDto;
     }
-
-//    @ResponseBody
-//    @GetMapping("/images/{filename}")
-//    public UrlResource downloadImage(@PathVariable String filename, HttpServletRequest request) throws MalformedURLException {
-//        return new UrlResource("file:" + fileStore.getFullPath(filename,request));
-//    }
 
     @ResponseBody
     @PostMapping(value = "/managerInfo")

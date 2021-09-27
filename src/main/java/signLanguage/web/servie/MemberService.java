@@ -57,16 +57,16 @@ public class MemberService {
         return memoryMemberRepository.findOne(id).get();
     }
 
-    public MemberBasicInfo printMemberBasicInfo(Long id) {
-        Member member = findById(id);
-        MemberBasicInfo memberBasicInfo = new MemberBasicInfo(member.getId(),
-                member.getUserNickName(),
-                member.getUsername(),
-                member.getEMail(),
-                member.getCellPhone());
-
-        return memberBasicInfo;
-    }
+//    public MemberBasicInfo printMemberBasicInfo(Long id) {
+//        Member member = findById(id);
+//        MemberBasicInfo memberBasicInfo = new MemberBasicInfo(member.getId(),
+//                member.getUserNickName(),
+//                member.getUsername(),
+//                member.getEMail(),
+//                member.getCellPhone());
+//
+//        return memberBasicInfo;
+//    }
 
     @Transactional
     public void regComment(ReturnComment commentDto, Long id, String orderId) {

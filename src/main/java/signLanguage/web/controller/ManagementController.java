@@ -11,11 +11,14 @@ import signLanguage.web.auth.PrincipalDetails;
 import signLanguage.web.domain.common.OrderStatus;
 import signLanguage.web.domain.dto.ManagerMainList;
 import signLanguage.web.domain.dto.OrderManagerPagingDto;
+import signLanguage.web.domain.dto.component.ManagerMainAllList;
 import signLanguage.web.domain.dto.component.PagingComponent;
 import signLanguage.web.servie.MemberService;
 import signLanguage.web.servie.OrderService;
 
 import java.util.List;
+
+import static signLanguage.web.servie.MemberService.*;
 
 @RestController
 @Slf4j
@@ -34,17 +37,21 @@ public class ManagementController {
     }
 
     @GetMapping("/recepten")
-    public ManagerMainList<OrderManagerPagingDto, List> receptionReady(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                                       @RequestParam Long page,
-                                                                       @RequestParam OrderStatus status){
+    public ManagerMainAllList<OrderManagerPagingDto, List, MemberBasicInfo> receptionReady(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                                                                         @RequestParam Long page,
+                                                                                                         @RequestParam OrderStatus status){
         return orderService.receptionReady(principalDetails.getMember().getInterpreter().getId(),page,status);
     }
 
-    //메인화면 매니저정보
-    @GetMapping("/main")
-    public MemberService.MemberBasicInfo managerMain(@AuthenticationPrincipal PrincipalDetails principalDetails){
-        return memberService.printMemberBasicInfo(principalDetails.getMember().getId());
-    }
+
+
+
+//
+//    //메인화면 매니저정보
+//    @GetMapping("/main")
+//    public MemberBasicInfo managerMain(@AuthenticationPrincipal PrincipalDetails principalDetails){
+//        return memberService.printMemberBasicInfo(principalDetails.getMember().getId());
+//    }
 
 
 

@@ -9,6 +9,7 @@ import signLanguage.web.domain.common.Classification;
 import signLanguage.web.domain.common.OrderStatus;
 import signLanguage.web.domain.common.basicDataDto.TwoData;
 import signLanguage.web.domain.dto.*;
+import signLanguage.web.domain.dto.component.ManagerMainAllList;
 import signLanguage.web.domain.dto.component.PagingComponent;
 import signLanguage.web.domain.entity.Member;
 import signLanguage.web.domain.entity.ReceptionOrder;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
+import static signLanguage.web.servie.MemberService.*;
 
 @Service
 @Slf4j
@@ -62,13 +64,15 @@ public class OrderService {
     }
 
 
-    public ManagerMainList<OrderManagerPagingDto, List> receptionReady(Long interpreterId, Long curPage, OrderStatus status) {
+    public ManagerMainAllList<OrderManagerPagingDto, List, MemberBasicInfo> receptionReady(Long interpreterId, Long curPage, OrderStatus status) {
 
         List<ReceptionOrder> interpreterJoinOrder = orderRepository.findInterpreterJoinOrder(interpreterId);
-        List<MainBaseInfo> collect = interpreterJoinOrder.stream().map((o) -> new MainBaseInfo(interpreterId, o.getId(), o.getReceptionDate(), o.getSubject(), o.getStatus(), o.getClassification())).collect(toList());
+        List<MainBaseInfo> collect = interpreterJoinOrder.stream().map((o) -> new MainBaseInfo(interpreterId, o.getId(), o.getReceptionDate(), o.getSubject(), o.getStatus(), o.getClassification(),o.getMember().getUserNickName())).collect(toList());
 
+        Member member = interpreterJoinOrder.get(0).getInterpreter().getMember();
+        MemberBasicInfo memberBasicInfo = new MemberBasicInfo(member.getId(), member.getUserNickName(), member.getUsername(), member.getEMail(), member.getCellPhone());
         OrderManagerPagingDto pagingDto = getOrderManagerPaging(curPage, status);
-        return new ManagerMainList<>(pagingDto, collect);
+        return new ManagerMainAllList<>(pagingDto, collect, memberBasicInfo);
     }
 
     private OrderManagerPagingDto getOrderManagerPaging(Long curPage, OrderStatus status) {

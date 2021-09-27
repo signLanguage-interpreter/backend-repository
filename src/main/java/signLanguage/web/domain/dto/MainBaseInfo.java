@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 @Data
 public class MainBaseInfo {
     private Long id;
-    @JsonIgnore
     private String userNickName;
     @JsonIgnore
     private String cellPhone;
@@ -36,6 +35,24 @@ public class MainBaseInfo {
         this.receptionDate = receptionDate;
         this.status = status;
         this.subject = subject;
+        this.classification = classification;
+    }
+
+
+    //메인 예약정보 추출
+    public MainBaseInfo(Long id,
+                        String receptionId,
+                        LocalDateTime receptionDate,
+                        String subject
+            ,OrderStatus status
+            ,Classification classification
+            ,String userNickName) {
+        this.id = id;
+        this.receptionId = receptionId;
+        this.receptionDate = receptionDate;
+        this.status = status;
+        this.subject = subject;
+        this.userNickName = userNickName;
         this.classification = classification;
     }
 
