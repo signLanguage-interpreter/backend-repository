@@ -15,5 +15,6 @@ public interface OrderRepositoryInterface {
     public List<RecpetionDetailDto> findOneWithComment(String receptionId);
     public Long findAllCount(OrderStatus status);
     public List findAll(Long start, Long end, OrderStatus status);
-    public List<ReceptionOrder> findInterpreterJoinOrder(Long interpreterId);
+    public List<ReceptionOrder> findInterpreterJoinOrder(Long id,Long start, Long end,OrderStatus status);
+    public List<ReceptionOrder> findHold(Long start, Long end, OrderStatus status);
 }

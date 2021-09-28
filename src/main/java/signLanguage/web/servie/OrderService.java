@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
@@ -42,7 +43,6 @@ public class OrderService {
 
     public ManagerMainList<OrderManagerPagingDto, List> getManagerMainAll(Long curPage ,OrderStatus status){
         OrderManagerPagingDto pagingDto = getOrderManagerPaging(curPage, status);
-
         List<Object[]> allInfo = orderRepository.findAll(pagingComponent.getStart(curPage),pagingComponent.getEnd(curPage),status);
 
         if(allInfo.isEmpty()){
@@ -64,14 +64,36 @@ public class OrderService {
     }
 
 
-    public ManagerMainAllList<OrderManagerPagingDto, List, MemberBasicInfo> receptionReady(Long interpreterId, Long curPage, OrderStatus status) {
+    public ManagerMainAllList<OrderManagerPagingDto, List, MemberBasicInfo> receptionReady(Long id, Long curPage, OrderStatus status) {
+        OrderManagerPagingDto pagingDto = getOrderManagerPaging(curPage, status);
+        List<ReceptionOrder> interpreterJoinOrder = orderRepository.findInterpreterJoinOrder(id, pagingDto.getStart(), pagingDto.getEnd(),status);
+        List<MainBaseInfo> collect = interpreterJoinOrder.stream().map(o -> new MainBaseInfo(
+                o.getMember().getId(),
+                o.getId(),
+                o.getReceptionDate(),
+                o.getSubject(),
+                o.getStatus(),
+                o.getClassification(),
+                o.getMember().getUserNickName())).collect(toList());
 
-        List<ReceptionOrder> interpreterJoinOrder = orderRepository.findInterpreterJoinOrder(interpreterId);
-        List<MainBaseInfo> collect = interpreterJoinOrder.stream().map((o) -> new MainBaseInfo(interpreterId, o.getId(), o.getReceptionDate(), o.getSubject(), o.getStatus(), o.getClassification(),o.getMember().getUserNickName())).collect(toList());
+        if(collect.isEmpty()){
+            Member member = memberRepository.findOne(id).orElseThrow(() -> new NullPointerException());
+            MemberBasicInfo memberBasicInfo = new MemberBasicInfo(member.getId(),
+                    member.getUserNickName(),
+                    member.getUsername(),
+                    member.getEMail(),
+                    member.getCellPhone());
+            return new ManagerMainAllList<>(null, null, memberBasicInfo);
+        }
 
         Member member = interpreterJoinOrder.get(0).getInterpreter().getMember();
-        MemberBasicInfo memberBasicInfo = new MemberBasicInfo(member.getId(), member.getUserNickName(), member.getUsername(), member.getEMail(), member.getCellPhone());
-        OrderManagerPagingDto pagingDto = getOrderManagerPaging(curPage, status);
+        MemberBasicInfo memberBasicInfo = new MemberBasicInfo(member.getId(),
+                member.getUserNickName(),
+                member.getUsername(),
+                member.getEMail(),
+                member.getCellPhone());
+
+
         return new ManagerMainAllList<>(pagingDto, collect, memberBasicInfo);
     }
 
@@ -125,6 +147,34 @@ public class OrderService {
             return new TwoData<OrderInfoDto,List<CommentDto>>(orderInfoDtoListEntry.getKey(),orderInfoDtoListEntry.getValue());
         }
         return null;
+    }
+
+    public ManagerMainAllList<OrderManagerPagingDto, List, MemberBasicInfo> receptionHold(Long page, OrderStatus status, Long managerId) {
+        OrderManagerPagingDto pagingDto = getOrderManagerPaging(page, status);
+        List<ReceptionOrder> hold = orderRepository.findHold(pagingDto.getStart(), pagingDto.getEnd(), status);
+        Member member = memberRepository.findOne(managerId).orElseThrow(() -> new NullPointerException());
+
+        MemberBasicInfo memberBasicInfo = new MemberBasicInfo(member.getId(),
+                member.getUserNickName(),
+                member.getUsername(),
+                member.getEMail(),
+                member.getCellPhone());
+
+        List<MainBaseInfo> collect = hold.stream().map(o -> new MainBaseInfo(
+                o.getMember().getId(),
+                o.getId(),
+                o.getReceptionDate(),
+                o.getSubject(),
+                o.getStatus(),
+                o.getClassification(),
+                o.getMember().getUserNickName())).collect(toList());
+
+        if(collect.isEmpty()){
+            return new ManagerMainAllList<>(null, null, memberBasicInfo);
+        }
+
+        return new ManagerMainAllList<>(pagingDto,collect,memberBasicInfo);
+
     }
 
 

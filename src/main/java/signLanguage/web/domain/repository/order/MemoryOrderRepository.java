@@ -7,6 +7,7 @@ import signLanguage.web.domain.common.OrderStatus;
 import signLanguage.web.domain.dto.MainBaseInfo;
 import signLanguage.web.domain.dto.RecpetionDetailDto;
 import signLanguage.web.domain.entity.ReceptionOrder;
+import signLanguage.web.domain.repository.member.MemberRepositoryInterface;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -59,16 +60,34 @@ public class MemoryOrderRepository implements OrderRepositoryInterface {
         return Optional.of(em.find(ReceptionOrder.class, id));
     }
 
-    public List<ReceptionOrder> findInterpreterJoinOrder(Long interpreterId){
-        List<ReceptionOrder> orderList = em.createQuery("select o from ReceptionOrder o " +
-                                                                "join fetch o.member " +
-                                                                "join fetch o.interpreter i " +
-                                                                "join fetch i.member " +
-                                                                "where i.id =:Id",
-                                                                ReceptionOrder.class)
-                .setParameter("Id", interpreterId)
+
+
+    //find ready or end
+    public List<ReceptionOrder> findInterpreterJoinOrder(Long memberId,Long start, Long end,OrderStatus status){
+        List<ReceptionOrder> result = em.createQuery("select o from ReceptionOrder o " +
+                "join fetch o.interpreter i " +
+                "join fetch i.member m where m.id =:memberId and o.status =:status"
+                , ReceptionOrder.class)
+                .setParameter("memberId",  memberId)
+                .setParameter("status",status)
+                .setFirstResult(Long.valueOf(start).intValue()-1)
+                .setMaxResults(Long.valueOf(end).intValue())
                 .getResultList();
-        return orderList;
+        return result;
+    }
+
+    @Override
+    public List<ReceptionOrder> findHold(Long start, Long end, OrderStatus status) {
+        List<ReceptionOrder> receptionHold = em.createQuery("select o from ReceptionOrder o join fetch o.member where o.status = :status"
+                , ReceptionOrder.class)
+                .setParameter("status", status)
+                .setFirstResult(Long.valueOf(start).intValue()-1)
+                .setMaxResults(Long.valueOf(end).intValue())
+                .getResultList();
+
+        log.info("{}",receptionHold.size());
+
+        return receptionHold;
     }
 
     public List<MainBaseInfo> findMemberJoinOrder(Long id){

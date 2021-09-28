@@ -7,13 +7,13 @@ public class StringToStatus implements Converter<String, OrderStatus> {
 
     @Override
     public OrderStatus convert(String source) {
-        if(source.equals("HOLD")){
+        if(source.equals("hold")){
             return OrderStatus.HOLD;
         }
-        if(source.equals("READY")){
+        if(source.equals("ready")){
             return OrderStatus.READY;
         }
-        if(source.equals("END")){
+        if(source.equals("end")){
             return OrderStatus.END;
         }else{
             throw new IllegalArgumentException();

@@ -59,7 +59,10 @@ public class ManagerService {
         Member member = managerMemberRepository.findMemberWithInterpreter(id).get();
         if(member.getInterpreter() == null){
             Interpreter interpreter = Interpreter.createInterpreter(introduce, position, uploadName, member);
+            log.info("{}=======================================인터프리터가있습니다.=",interpreter);
             managerMemberRepository.save(interpreter);
+            String introduce1 = member.getInterpreter().getIntroduce();
+            log.info("{}",introduce1);
         }
         modifyInterpreter(introduce, position, uploadName, member);
     }
@@ -74,6 +77,14 @@ public class ManagerService {
 
     @Transactional
     public boolean receiptReception(String orderId, Long memberId, OrderStatus status){
+        if(status==OrderStatus.END){
+            Optional<ReceptionOrder> findOrder = orderRepository.findOne(orderId);
+            if(validation(findOrder)){
+                log.info("{}바뀜===================================ㄱ야ㅕㅇㅇㅇㅇㅇ",status);
+                findOrder.get().setStatus(status);
+            }
+        }
+
         Optional<ReceptionOrder> findOrder = orderRepository.findOne(orderId);
         Optional<Member> memberWithInterpreter = managerMemberRepository.findMemberWithInterpreter(memberId);
         if(validation(findOrder) && validation(memberWithInterpreter)){
@@ -81,6 +92,7 @@ public class ManagerService {
                 throw new NullPointerException("값이 존재하지 않습니다.");
             }
             findOrder.get().setInterpreter(memberWithInterpreter.get().getInterpreter());
+            log.info("{}===================================ㄱ야ㅕㅇㅇㅇㅇㅇ",status);
             findOrder.get().setStatus(status);
             return true;
         }

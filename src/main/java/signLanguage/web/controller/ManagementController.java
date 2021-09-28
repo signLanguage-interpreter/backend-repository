@@ -36,11 +36,15 @@ public class ManagementController {
         return orderService.getManagerMainAll(page, status);
     }
 
-    @GetMapping("/recepten")
-    public ManagerMainAllList<OrderManagerPagingDto, List, MemberBasicInfo> receptionReady(@AuthenticationPrincipal PrincipalDetails principalDetails,
+    @GetMapping("/main")
+    public ManagerMainAllList receptionReady(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                                                                          @RequestParam Long page,
                                                                                                          @RequestParam OrderStatus status){
-        return orderService.receptionReady(principalDetails.getMember().getInterpreter().getId(),page,status);
+        if(status == OrderStatus.HOLD){
+            ManagerMainAllList<OrderManagerPagingDto, List, MemberBasicInfo> orderManagerPagingDtoListMemberBasicInfoManagerMainAllList = orderService.receptionHold(page, status, principalDetails.getMember().getId());
+            return orderManagerPagingDtoListMemberBasicInfoManagerMainAllList;
+        }
+        return orderService.receptionReady(principalDetails.getMember().getId(),page,status);
     }
 
 

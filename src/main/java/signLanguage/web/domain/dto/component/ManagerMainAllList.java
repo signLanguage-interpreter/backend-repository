@@ -1,13 +1,25 @@
 package signLanguage.web.domain.dto.component;
 
+import lombok.Getter;
+
+@Getter
 public class ManagerMainAllList<T,E,L> {
-    private T page;
-    private E order;
+    private T paging;
+    private E list;
     private L manager;
 
-    public ManagerMainAllList(T page, E order, L manager) {
-        this.page = page;
-        this.order = order;
+    public ManagerMainAllList(T paging, E list, L manager) {
+        this.paging = paging;
+        this.list = list;
         this.manager = manager;
+    }
+
+    @Override
+    public String toString() {
+        return "ManagerMainAllList{" +
+                "paging=" + paging +
+                ", list=" + list +
+                ", manager=" + manager +
+                '}';
     }
 }

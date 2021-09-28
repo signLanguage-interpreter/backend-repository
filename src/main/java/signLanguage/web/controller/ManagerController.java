@@ -49,9 +49,7 @@ public class ManagerController {
 
         MultipartFile imageFile = managerDto.getImageFile();
         UploadImage uploadImage = fileStore.storeImage(imageFile,request);
-        System.out.println(managerDto.getPosition().substring(13, managerDto.getPosition().length() - 2));
         Position byPosition = Position.findByPosition(managerDto.getPosition().substring(13, managerDto.getPosition().length() - 2));
-        System.out.println(managerDto.getPosition().substring(13, managerDto.getPosition().length() - 2));
         managerService.addInterpreter(managerDto.getIntroduce().substring(14,managerDto.getIntroduce().length()-2),
                 byPosition,
                 uploadImage,
@@ -67,11 +65,14 @@ public class ManagerController {
     }
 
 
+    @ResponseBody
     @PostMapping("/receipt/{orderId}")
     public void receiptReception(@PathVariable String orderId,
                                  @RequestParam OrderStatus status,
             @AuthenticationPrincipal PrincipalDetails principalDetails)
     // 매니저는 신뢰받는 권한이기 때문에 접수에 제한로직을 걸지 않음.
+
+
     {
         if(managerService.receiptReception(orderId , principalDetails.getMember().getId(),status)){
             return ;

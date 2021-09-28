@@ -31,8 +31,10 @@ public class MemoryManagerMemberRepository implements ManagerMemberRepositoryInt
     @Override
     public Optional<Member> findMemberWithInterpreter(Long id) {
         Member result = em.createQuery("select m from Member m " +
-                "left outer join m.interpreter i where m.id = :memberId", Member.class).setParameter("memberId", id).
-                getSingleResult();
+                "left outer join m.interpreter where m.id = :memberId"
+                , Member.class)
+                .setParameter("memberId", id)
+                .getSingleResult();
 
         //No entity found for query exception add
         return Optional.of(result);
