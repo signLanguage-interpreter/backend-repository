@@ -3,6 +3,7 @@ package signLanguage.web.domain.dto;
 import lombok.Data;
 import signLanguage.web.domain.entity.Comment;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
@@ -22,11 +23,5 @@ public class CommentDto {
 
     public Long getId() {
         return commentId;
-    }
-
-    @Data
-    public static class ReturnComment{
-        @NotNull(message = "댓글은 빈칸을 유지하지 못합니다.")
-        private String content;
     }
 }

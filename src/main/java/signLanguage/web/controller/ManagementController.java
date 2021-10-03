@@ -30,7 +30,7 @@ public class ManagementController {
     private final OrderService orderService;
     private final PagingComponent pagingComponent;
 
-    @GetMapping("") //manager/info ? page= 1 & status=HOLD
+    @GetMapping("/all_register") //manager/info ? page= 1 & status=HOLD
     public ManagerMainList managerMainPage(@RequestParam Long page,
                                 @RequestParam OrderStatus status){
         return orderService.getManagerMainAll(page, status);

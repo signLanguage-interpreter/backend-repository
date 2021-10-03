@@ -35,13 +35,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        log.info("JwtAuthenticationFilter Filter : Try Login");
         try {
 
             ObjectMapper objectMapper = new ObjectMapper();
             Member member = objectMapper.readValue(request.getInputStream(), Member.class);
-
-
 
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(member.getUsername(), member.getPassword());
@@ -52,7 +49,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 return null;
             }
             PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-            log.info("Try Login Member = {}",principal.getMember());
             // Session Saved
             return authentication;
 
@@ -85,6 +81,5 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         //role
         response.addHeader("auth", auth);
-        log.info("로그인 성공");
     }
 }

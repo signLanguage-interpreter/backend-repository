@@ -7,7 +7,6 @@ import signLanguage.web.domain.common.OrderStatus;
 import signLanguage.web.domain.dto.MainBaseInfo;
 import signLanguage.web.domain.dto.RecpetionDetailDto;
 import signLanguage.web.domain.entity.ReceptionOrder;
-import signLanguage.web.domain.repository.member.MemberRepositoryInterface;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -66,7 +65,8 @@ public class MemoryOrderRepository implements OrderRepositoryInterface {
     public List<ReceptionOrder> findInterpreterJoinOrder(Long memberId,Long start, Long end,OrderStatus status){
         List<ReceptionOrder> result = em.createQuery("select o from ReceptionOrder o " +
                 "join fetch o.interpreter i " +
-                "join fetch i.member m where m.id =:memberId and o.status =:status"
+                "join fetch i.member m where m.id =:memberId and o.status =:status " +
+                        "order by o.receptionDate asc "
                 , ReceptionOrder.class)
                 .setParameter("memberId",  memberId)
                 .setParameter("status",status)
@@ -78,7 +78,8 @@ public class MemoryOrderRepository implements OrderRepositoryInterface {
 
     @Override
     public List<ReceptionOrder> findHold(Long start, Long end, OrderStatus status) {
-        List<ReceptionOrder> receptionHold = em.createQuery("select o from ReceptionOrder o join fetch o.member where o.status = :status"
+        List<ReceptionOrder> receptionHold = em.createQuery("select o from ReceptionOrder o join fetch o.member where o.status = :status " +
+                        "order by o.receptionDate asc"
                 , ReceptionOrder.class)
                 .setParameter("status", status)
                 .setFirstResult(Long.valueOf(start).intValue()-1)
@@ -103,15 +104,22 @@ public class MemoryOrderRepository implements OrderRepositoryInterface {
 
     @Override
     public List<RecpetionDetailDto> findOneWithComment(String receptionId) {
-        List<RecpetionDetailDto> result = em.createQuery("select new signLanguage.web.domain.dto.RecpetionDetailDto(re.subject,re.content,re.receptionDate,re.classification,re.status, co.id, co.content, m.userNickName, co.registryTime) " +
-                "from ReceptionOrder re " +
-                "left join re.commentList co " +
-                "left join co.member m " +
-                "where re.id = :receptionId ", RecpetionDetailDto.class)
-                .setParameter("receptionId", receptionId)
-                .getResultList();
 
-        log.info("{}",result);
-        return result;
+        return em.createQuery("select new signLanguage.web.domain.dto.RecpetionDetailDto(o.subject,o.content,o.receptionDate,o.classification,o.status,c.id,c.content,m.userNickName, c.registryTime) " +
+                "from ReceptionOrder o " +
+                "join o.commentList c " +
+                "join c.member m " +
+                "where o.id = :receptionId", RecpetionDetailDto.class).setParameter("receptionId",receptionId).getResultList();
+
+//        List<ReceptionOrder> receptionOrders = em.createQuery("select re " +
+//                "from ReceptionOrder re " +
+//                "left join Comment co " +
+//                "on re.id = co.receptionOrder.id " +
+//                "left join co.member m " +
+//                "on m.id = co.member.id " +
+//                        "where re.id = :receptionId"
+//                , ReceptionOrder.class)
+//                .setParameter("receptionId", receptionId)
+//                .getResultList();
     }
 }

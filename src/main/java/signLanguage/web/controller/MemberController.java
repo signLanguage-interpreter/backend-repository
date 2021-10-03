@@ -6,13 +6,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import signLanguage.web.auth.PrincipalDetails;
 import signLanguage.web.domain.common.CommonLocalTime;
 import signLanguage.web.domain.common.Gender;
-import signLanguage.web.domain.dto.CommentDto.ReturnComment;
 import signLanguage.web.domain.dto.MemberJoinDto;
 import signLanguage.web.domain.dto.MemberModifyDto;
+import signLanguage.web.domain.dto.ReturnComment;
 import signLanguage.web.domain.entity.Member;
 import signLanguage.web.servie.MemberService;
 
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -43,10 +45,7 @@ public class MemberController {
                 .commonLocalTime(new CommonLocalTime()).build();
 
         if (validationBindingResult(bindingResult)) return bindingResult.getAllErrors();
-
         Long joinMemberId = memberService.join(member);
-        log.info("가입을 진행한 Member = {}", joinMemberId);
-
         return joinMemberId;
     }
 
@@ -79,13 +78,17 @@ public class MemberController {
         }
     }
 
+
     @PostMapping("/user/{orderId}/comment")
-    public void registryComment(@Valid ReturnComment commentDto,
+    public List registryComment(@Valid @RequestBody ReturnComment commentDto,
+                                BindingResult bindingResult,
                                 @PathVariable String orderId,
                                 @AuthenticationPrincipal PrincipalDetails principalDetails){
-        log.info("=============={}",commentDto.getContent());
+        if(validationBindingResult(bindingResult)){
+            return bindingResult.getAllErrors();
+        }
         memberService.regComment(commentDto,principalDetails.getMember().getId(),orderId);
-
+        return null;
     }
 
 
@@ -103,7 +106,8 @@ public class MemberController {
 
 
     //============================================================
-
+    //======================== Master Back Door===================
+    //============================================================
 
 
 
@@ -125,8 +129,6 @@ public class MemberController {
         if (validationBindingResult(bindingResult)) return bindingResult.getAllErrors();
 
         Long joinMemberId = memberService.join(member);
-        log.info("가입을 진행한 Manager = {}", joinMemberId);
-
         return joinMemberId;
     }
 

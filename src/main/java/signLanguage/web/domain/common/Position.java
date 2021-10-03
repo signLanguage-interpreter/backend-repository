@@ -24,7 +24,6 @@ public enum Position {
 
     public static Position findByPosition(String positions) {
         for(Position position : Position.values()) {
-            log.info("{}=============={}",position.getValue(),position);
             if(position.getValue().equals(positions)) {
                 return position;
             }

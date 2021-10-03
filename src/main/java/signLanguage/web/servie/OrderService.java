@@ -13,7 +13,6 @@ import signLanguage.web.domain.dto.component.ManagerMainAllList;
 import signLanguage.web.domain.dto.component.PagingComponent;
 import signLanguage.web.domain.entity.Member;
 import signLanguage.web.domain.entity.ReceptionOrder;
-import signLanguage.web.domain.repository.comment.CommentRepositoryInterface;
 import signLanguage.web.domain.repository.member.MemberRepositoryInterface;
 import signLanguage.web.domain.repository.order.OrderRepositoryInterface;
 
@@ -24,12 +23,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toList;
-import static signLanguage.web.servie.MemberService.*;
+import static java.util.stream.Collectors.*;
+import static signLanguage.web.servie.MemberService.MemberBasicInfo;
 
 @Service
 @Slf4j
@@ -135,18 +131,42 @@ public class OrderService {
     }
 
 
-    public TwoData<OrderInfoDto,List<CommentDto>> showDetailReceptionInfo(String receptionId) {
-        List<RecpetionDetailDto> oneWithComment = orderRepository.findOneWithComment(receptionId);
-        Map<OrderInfoDto, List<CommentDto>> collect = oneWithComment.stream()
-                .collect(groupingBy(o -> new OrderInfoDto(o.getStatus(), o.getSubject(), o.getContent(), o.getReceptionDate(), o.getClassification()),
-                        Collectors.mapping(o -> new CommentDto(o.getCommentId(), o.getUserNickName(), o.getUserNickName(), o.getRegistryTime()), toList())));
-        for (Map.Entry<OrderInfoDto, List<CommentDto>> orderInfoDtoListEntry : collect.entrySet()) {
-            if(orderInfoDtoListEntry.getValue().get(0).getId()==null){
-                return new TwoData<OrderInfoDto,List<CommentDto>>(orderInfoDtoListEntry.getKey(),null);
-            }
-            return new TwoData<OrderInfoDto,List<CommentDto>>(orderInfoDtoListEntry.getKey(),orderInfoDtoListEntry.getValue());
-        }
-        return null;
+    public List<OrderInfoDto> showDetailReceptionInfo(String receptionId) {
+        List<RecpetionDetailDto> findReceptionOrders = orderRepository.findOneWithComment(receptionId);
+
+
+        List<OrderInfoDto> collect = findReceptionOrders.stream().collect(groupingBy((o) -> new OrderInfoDto(o.getStatus(), o.getSubject(), o.getContent(), o.getReceptionDate(), o.getClassification()),
+                mapping((o) -> new CommentDto(o.getContentId(), o.getContent(), o.getUserNickName(), o.getRegistryTime()), toList())))
+                .entrySet().stream()
+                .map(e -> new OrderInfoDto(e.getKey().getOrderStatus(), e.getKey().getSubject(), e.getKey().getContent(), e.getKey().getReceptionDate(), e.getKey().getClassification(), e.getValue()))
+                .collect(toList());
+        return collect;
+
+//        log.info("=========================사이즈{}",findReceptionOrders.size());
+//        if(findReceptionOrders.isEmpty()){
+//            throw new NullPointerException();
+//        }
+//        ReceptionOrder receptionOrder = findReceptionOrders.get(0);
+//        OrderInfoDto orderInfoDto = new OrderInfoDto(receptionOrder.getStatus(), receptionOrder.getSubject(), receptionOrder.getContent(), receptionOrder.getReceptionDate(), receptionOrder.getClassification());
+//
+//        if(receptionOrder.getCommentList().isEmpty()){
+//            return new TwoData<OrderInfoDto,List<CommentDto>>(orderInfoDto,null);
+//        }
+//        List<CommentDto> collect = receptionOrder.getCommentList().stream().map(c -> new CommentDto(c.getId(), c.getContent(), c.getMember().getUserNickName(), c.getRegistryTime())).collect(toList());
+//        return new TwoData<OrderInfoDto,List<CommentDto>>(orderInfoDto,collect);
+
+
+
+//        for (Map.Entry<OrderInfoDto, List<CommentDto>> orderInfoDtoListEntry : collect.entrySet()) {
+//            if(orderInfoDtoListEntry.getValue().get(0).getId()==null){
+//                return new TwoData<OrderInfoDto,List<CommentDto>>(orderInfoDtoListEntry.getKey(),null);
+//            }
+//            int size = orderInfoDtoListEntry.getValue().size();
+//            log.info("=========================사이즈{}",size);
+//            return new TwoData<OrderInfoDto,List<CommentDto>>(orderInfoDtoListEntry.getKey(),orderInfoDtoListEntry.getValue());
+//
+//        }
+//        return null;
     }
 
     public ManagerMainAllList<OrderManagerPagingDto, List, MemberBasicInfo> receptionHold(Long page, OrderStatus status, Long managerId) {

@@ -10,15 +10,12 @@ import signLanguage.web.domain.common.basicDataDto.*;
 import signLanguage.web.domain.dto.CommentDto;
 import signLanguage.web.domain.dto.MainBaseInfo;
 import signLanguage.web.domain.dto.OrderInfoDto;
-import signLanguage.web.domain.dto.RecpetionDetailDto;
 import signLanguage.web.domain.entity.Member;
 import signLanguage.web.servie.OrderService;
 
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
@@ -32,8 +29,7 @@ public class ReceptionController {
     public Object orderReception(@Valid @RequestBody OrderInfoDto orderInfoDto,
                                  BindingResult bindingResult,
                                  @AuthenticationPrincipal PrincipalDetails memberDetails){
-        Member member = memberDetails.getMember(); // 준영속 ?
-        log.info("id가 ({})인 멤버의 예약을 시도합니다. = [{}]",member.getId(),member.toString());
+        Member member = memberDetails.getMember();
         if (!bindingResult.hasErrors()){
             return new Data<String>(orderService.saveOrder(member.getId(),
                                     orderInfoDto.getSubject(),
@@ -68,17 +64,13 @@ public class ReceptionController {
 
 
     @GetMapping("/regist/{userId}/{receptionId}")
-    public TwoData<OrderInfoDto,List<CommentDto>> showDetailReception(@PathVariable String receptionId,
+    public List<OrderInfoDto> showDetailReception(@PathVariable String receptionId,
                                                                       @PathVariable Long userId,
                                                                       @AuthenticationPrincipal PrincipalDetails principalDetails){
-        validationMember(userId, principalDetails);
-        return orderService.showDetailReceptionInfo(receptionId);
+
+        List<OrderInfoDto> orderInfoDtos = orderService.showDetailReceptionInfo(receptionId);
+        return orderInfoDtos;
     }
 
-    private void validationMember(Long userId, PrincipalDetails principalDetails) {
-        if(principalDetails.getMember().getId() != userId){
-            throw new RuntimeException("no authentication");
-        }
-    }
 
 }

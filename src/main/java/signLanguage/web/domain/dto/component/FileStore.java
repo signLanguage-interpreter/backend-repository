@@ -22,7 +22,6 @@ public class FileStore {
 
     public UploadImage storeImage(MultipartFile multipartFile, HttpServletRequest request) throws IOException {
 
-        log.info("679=================0-0=0-=0-=0-=0=0={}",request.getServletContext().getRealPath("/"));
         if(multipartFile == null || multipartFile.isEmpty()){
             return new UploadImage(null, null);
         }

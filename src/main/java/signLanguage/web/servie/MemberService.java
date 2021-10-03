@@ -1,17 +1,12 @@
 package signLanguage.web.servie;
 
-import com.sun.xml.bind.v2.runtime.unmarshaller.Intercepter;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import signLanguage.web.domain.common.Position;
-import signLanguage.web.domain.dto.CommentDto;
-import signLanguage.web.domain.dto.ManagerDto;
-import signLanguage.web.domain.dto.UploadImage;
+import signLanguage.web.domain.dto.ReturnComment;
 import signLanguage.web.domain.entity.Comment;
-import signLanguage.web.domain.entity.Interpreter;
 import signLanguage.web.domain.entity.Member;
 import signLanguage.web.domain.entity.ReceptionOrder;
 import signLanguage.web.domain.repository.comment.CommentRepositoryInterface;
@@ -19,11 +14,7 @@ import signLanguage.web.domain.repository.manager.ManagerMemberRepositoryInterfa
 import signLanguage.web.domain.repository.member.MemoryMemberRepository;
 import signLanguage.web.domain.repository.order.OrderRepositoryInterface;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static signLanguage.web.domain.dto.CommentDto.*;
 
 @Service
 @Slf4j
